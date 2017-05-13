@@ -33,6 +33,7 @@
          '@dpscale': (1/window.devicePixelRatio)+0.3
           });
       </script>
+
    </head>
    <body>
       <!-- Status bar overlay for full screen mode (PhoneGap) -->
@@ -532,7 +533,7 @@
                                 </div>
                             </div>
                         </form>
-                        <a href="/pages/registration.html" class="link bottomplansh">СОЗДАТЬ АККАУНТ</a>      
+                        <a href="pages/registration.html" class="link bottomplansh">СОЗДАТЬ АККАУНТ</a>      
                     </div>
                 </div>
             </div>
@@ -887,8 +888,9 @@
      
       <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
       <script type="text/javascript" src="cordova.js"></script>
-      <script type="text/javascript" src="lib/framework7/js/framework7.min.js"></script>
-            <script type="text/javascript" src="js/application_function.js"></script>
+      <script type="text/javascript" src="lib/framework7/js/framework7.js"></script>
+      <script>$.support.cors=true;</script>
+      <script type="text/javascript" src="js/application_function.js"></script>
       <script type="text/javascript" src="js/my-app.js"></script>
 
    </body>
