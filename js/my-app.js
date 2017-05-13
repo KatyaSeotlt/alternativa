@@ -550,34 +550,70 @@ $$('#search_save').on('click', function(){
 			'payment_type' => 'array', //array IN +*/
    
     var data={};
+    if($$('#search_begin_id').val()>0){
     data['from_city']=$$('#search_begin_id').val();
+    }
+    if($$('#search_end_id').val()>0){
     data['to_city']=$$('#search_end_id').val();
+    }
+   if($$('#calendar_date_from').val()!=''){
     data['loading_date_from']=$$('#calendar_date_from').val();
+    }
+   if($$('#calendar_date_to').val()!=''){  
     data['loading_date_to']=$$('#calendar_date_to').val();
+    }
     var only_cars=0;
     if($$('#only_cars').prop('checked')===true){only_cars=1;}    
     data['only_my_cars']=only_cars;
     var only_my_subscriptions=0;
-    if($$('#only_my_subscriptions').prop('checked')===true){only_my_subscriptions=1;}        
+    if($$('#only_subscribe').prop('checked')===true){only_my_subscriptions=1;}        
     data['only_my_subscriptions']=only_my_subscriptions;
-    data['weight_from']=$$('#weight_from').val();   
+     if($$('#weight_from').val()!=''){ 
+    data['weight_from']=$$('#weight_from').val();
+     }
+    if($$('#weight_to').val()!=''){ 
     data['weight_to']=$$('#weight_to').val();
-    data['length_from']=$$('#length_from').val();   
+    }
+    if($$('#length_from').val()!=''){ 
+    data['length_from']=$$('#length_from').val();
+    }
+    if($$('#length_to').val()!=''){             
     data['length_to']=$$('#length_to').val();
-    data['volume_from']=$$('#volume_from').val();   
+     }
+    if($$('#volume_from').val()!=''){  
+    data['volume_from']=$$('#volume_from').val();
+    }
+    if($$('#volume_to').val()!=''){      
     data['volume_to']=$$('#volume_to').val();
-    data['height_from']=$$('#height_from').val();   
-    data['height_to']=$$('#height_to').val();       
+    }
+    if($$('#height_from').val()!=''){      
+    data['height_from']=$$('#height_from').val();
+    }
+    if($$('#height_to').val()!=''){
+    data['height_to']=$$('#height_to').val();
+    }
+    if($$('#rate_search').val()!=''){   
     data['carrier_rate']=$$('#rate_search').val();
-    var carrier_rate_type=0;
-    if($$('#carrier_rate_type').prop('checked')===true){carrier_rate_type=1;}    
-    data['carrier_rate_type']=carrier_rate_type;    
-    data['cargo_type']=$$('#cargo_type').val();
-    
-    data['car_type']=$$('#car_type').val();
-      console.log($$('#cargo_type').val());
-      
-    //   vicFunc.getdataserver('map', data);
+    } 
+    data['carrier_rate_type']=$$('#carrier_rate_type').val();
+    var cargotypes=[];
+  
+    $$('select#cargo_type option').each(function(){
+        if($$(this)[0].selected==true){cargotypes.push($$(this).val());}
+    });    
+    data['cargo_type']=cargotypes;    
+    var cartypes=[];
+    $$('select#car_type option').each(function(){
+        if($$(this)[0].selected==true){cartypes.push($$(this).val());}
+    });   
+    data['car_type']=cartypes;
+//console.log();
+if(myApp.mainView.activePage.name==='map'){
+    vicFunc.getdataserver('map', data);
+}
+ if(myApp.mainView.activePage.name==='list'){
+     vicFunc.getdataserver('list_search', data);
+    }
     });
 
 

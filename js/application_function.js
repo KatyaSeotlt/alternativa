@@ -28,7 +28,10 @@ this.route = function(type, data, responseData){
  
  
  if(data=='person_edit'){if(type=='getpath'){ return {path:'settings/profile/edit', method:'POST'}; }else{ console.log(responseData);} }/*редактирование пользователя*/
- if(data=='map'){if(type=='getpath'){ return {path: 'map', method:'POST'}; }else{ _this.createMap(responseData);} }  
+ if(data=='map'){if(type=='getpath'){ return {path: 'map', method:'POST'}; }else{  myApp.closePanel(); _this.createMap(responseData);} }
+ 
+ if(data=='list_search'){if(type=='getpath'){ return {path: 'list', method:'POST'}; }else{  myApp.closePanel(); _this.routesshow(responseData,'#listblocks'); } }
+  
  if(data=='car_types'){if(type=='getpath'){ return {path:'settings/cars/types', method:'GET'}; }else{ car_types=responseData; vicFunc.carsshow();}}
  
  if(data=='cargo_types'){if(type=='getpath'){return {path:'settings/cargo/types', method:'GET'};}else{cargo_types=responseData; /*console.log(responseData);_this.getdataserver('payment_types');*/}}
@@ -118,6 +121,9 @@ requestnow=1;
         $$('#entererror').html(html);
 		//console.log(html);
         myApp.popup('.popup-wrongpass');
+   }
+   if(xhr.status>=400 && parent=='cities_search'){
+	cityIsSearched=0;
    }
 
     if(xhr.status!=401){
