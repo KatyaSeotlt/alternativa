@@ -22,7 +22,7 @@ this.route = function(type, data, responseData){
  if(data=='orders'){if(type=='getpath'){ return {path:'orders', method:'GET'}; }else{search=1;  _this.routesshow(responseData,'#routesblocks');} }
  if(data=='map_detail'){if(type=='getpath'){ return {path:'map/points/info', method:'POST'}; }else{map_Routes_Detail=responseData; _this.mapRoutesDetail(responseData);} } 
  
- if(data=='login'){if(type=='getpath'){ return {path:'login/', method:'POST'}; }else{/* console.log(responseData);}*/  } 
+ if(data=='login'){if(type=='getpath'){ return {path:'login/', method:'POST'}; }else{/* console.log(responseData);*/}  } 
  
   if(data=='cities_search'){if(type=='getpath'){ return {path:'cities/'+responseData, method:'GET'}; }else{cityIsSearched=0; _this.createDivCity(responseData);}  } 
  
