@@ -5,6 +5,8 @@ var token_type= false;
 var tocken='Bearer ';
 var serverpath="http://victrack.ru/api/";
 var myMap=false;
+var lat='';
+var lng='';
 var vicFunc = new victoryExchangeFunc();
 var userProfileData=false;
 var login='';
@@ -153,7 +155,7 @@ myApp.addView('.view-right', {
      var per_km=0;
     if($$('#per_km').prop('checked')===true){ per_km=1;}
     var data={per_km: per_km, rate: $$('#ratecount').val()};
-    console.log(data);
+   /* console.log(data);*/
     vicFunc.getdataserver('rateoffer',data, openRoute);
     }
     myApp.closeModal('.popup-rateorder');
@@ -253,7 +255,7 @@ if(opendopinfo){class1='podrinfoclose'; class2='active';}
 html=html+'<a class="podrinfo '+class1+'" name="'+map_Routes_Detail[i].id+'">ПОДРОБНАЯ ИНФОРМАЦИЯ</a>'+
 '<div class="detailinfo'+map_Routes_Detail[i].id+' '+class2+'"><div class="info">'+
 '<p class="variant">Варианты оплаты</p>'+
-'<p class="variant1"><i>-</i>'+map_Routes_Detail[i].payment_type_id+'</p>'+
+'<p class="variant1"><i>-</i>'+payment_types[map_Routes_Detail[i].payment_type_id]+'</p>'+
 '</div>'+
 '<div class="gruz">'+
 '<p class="variant">Тип груза</p>'+

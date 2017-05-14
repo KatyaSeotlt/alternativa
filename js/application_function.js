@@ -22,12 +22,12 @@ this.route = function(type, data, responseData){
  if(data=='orders'){if(type=='getpath'){ return {path:'orders', method:'GET'}; }else{search=1;  _this.routesshow(responseData,'#routesblocks');} }
  if(data=='map_detail'){if(type=='getpath'){ return {path:'map/points/info', method:'POST'}; }else{map_Routes_Detail=responseData; _this.mapRoutesDetail(responseData);} } 
  
- if(data=='login'){if(type=='getpath'){ return {path:'login/', method:'POST'}; }else{ console.log(responseData);}  } 
+ if(data=='login'){if(type=='getpath'){ return {path:'login/', method:'POST'}; }else{/* console.log(responseData);}*/  } 
  
   if(data=='cities_search'){if(type=='getpath'){ return {path:'cities/'+responseData, method:'GET'}; }else{cityIsSearched=0; _this.createDivCity(responseData);}  } 
  
  
- if(data=='person_edit'){if(type=='getpath'){ return {path:'settings/profile/edit', method:'POST'}; }else{ console.log(responseData);} }/*редактирование пользователя*/
+ if(data=='person_edit'){if(type=='getpath'){ return {path:'settings/profile/edit', method:'POST'}; }else{/* console.log(responseData);*/} }/*редактирование пользователя*/
  if(data=='map'){if(type=='getpath'){ return {path: 'map', method:'POST'}; }else{  myApp.closePanel(); _this.createMap(responseData);} }
  
  if(data=='list_search'){if(type=='getpath'){ return {path: 'list', method:'POST'}; }else{  myApp.closePanel(); search=0; _this.routesshow(responseData,'#listblocks'); } }
@@ -46,26 +46,26 @@ this.route = function(type, data, responseData){
  
  
   if(responseData!==undefined){
- if(data=='rateoffer'){if(type=='getpath'){ return {path: responseData+'/rateoffer', method:'POST'}; }else{ console.log(responseData);} } 
- if(data=='routerequest'){if(type=='getpath'){ return {path: responseData+'/routerequest', method:'POST'}; }else{ console.log(responseData);} } 
- if(data=='addtosubscriptions'){if(type=='getpath'){ return {path: responseData+'/addtosubscriptions', method:'POST'}; }else{ console.log(responseData);} } 
- if(data=='callback'){if(type=='getpath'){ return {path: responseData+'/callback', method:'POST'}; }else{ console.log(responseData);} }  
- if(data=='orders_nextstate'){if(type=='getpath'){ return {path: 'orders/'+responseData+'/nextstate', method:'POST'}; }else{ console.log(responseData);} } 
+ if(data=='rateoffer'){if(type=='getpath'){ return {path: responseData+'/rateoffer', method:'POST'}; }else{ /*console.log(responseData);*/} } 
+ if(data=='routerequest'){if(type=='getpath'){ return {path: responseData+'/routerequest', method:'POST'}; }else{/* console.log(responseData);*/} } 
+ if(data=='addtosubscriptions'){if(type=='getpath'){ return {path: responseData+'/addtosubscriptions', method:'POST'}; }else{ /*console.log(responseData);*/} } 
+ if(data=='callback'){if(type=='getpath'){ return {path: responseData+'/callback', method:'POST'}; }else{/* console.log(responseData);*/} }  
+ if(data=='orders_nextstate'){if(type=='getpath'){ return {path: 'orders/'+responseData+'/nextstate', method:'POST'}; }else{ /*console.log(responseData);*/} } 
  if(data=='ticket_view'){if(type=='getpath'){ return {path:'tickets-list/'+responseData+'/view', method:'GET'}; }else{ _this.ticketThemeView(responseData);} } 
- if(data=='ticket_message'){if(type=='getpath'){ return {path:'tickets-list/'+responseData+'/message', method:'POST'}; }else{ console.log(responseData);} } 
- if(data=='ticket_close'){if(type=='getpath'){ return {path:'tickets-list/'+responseData+'/close', method:'POST'}; }else{ console.log(responseData);} } 
- if(data=='ticket_order'){if(type=='getpath'){ return {path: responseData+'/ticket', method:'POST'}; }else{ console.log(responseData);} } 
+ if(data=='ticket_message'){if(type=='getpath'){ return {path:'tickets-list/'+responseData+'/message', method:'POST'}; }else{ /*console.log(responseData);*/} } 
+ if(data=='ticket_close'){if(type=='getpath'){ return {path:'tickets-list/'+responseData+'/close', method:'POST'}; }else{ /*console.log(responseData);*/} } 
+ if(data=='ticket_order'){if(type=='getpath'){ return {path: responseData+'/ticket', method:'POST'}; }else{ /*console.log(responseData);*/} } 
  if(data=='delete_subscriptions'){if(type=='getpath'){ return {path:'settings/subscriptions/'+responseData+'/delete', method:'DELETE'}; }else{ }} 
   if(data=='enable_subscriptions'){if(type=='getpath'){ return {path:'settings/subscriptions/'+responseData+'/enable', method:'POST'}; }else{ }}
 
  if(data=='car_delete'){if(type=='getpath'){return {path:'settings/cars/'+responseData+'/delete', method:'DELETE'};}else{}}  
  if(data=='enable_cars'){if(type=='getpath'){return {path:'settings/cars/'+responseData+'/enable', method:'POST'};}else{}}    
- if(data=='car_edit'){if(type=='getpath'){ return {path:'settings/cars/'+responseData+'/edit', method:'POST'}; }else{ console.log(responseData);} }
+ if(data=='car_edit'){if(type=='getpath'){ return {path:'settings/cars/'+responseData+'/edit', method:'POST'}; }else{ /*console.log(responseData);*/} }
  if(data=='get_car_edit'){if(type=='getpath'){ return {path:'settings/cars/'+responseData+'/edit', method:'GET'}; }else{ _this.changeCar(responseData);} }    
-  if(data=='addtosubscriptions'){if(type=='getpath'){ return {path: responseData+'/addtosubscriptions', method:'POST'}; }else{console.log(responseData);} }
-if(data=='rateoffer'){if(type=='getpath'){ return {path: responseData+'/rateoffer', method:'POST'}; }else{console.log(responseData);} } 
-if(data=='routerequest'){if(type=='getpath'){ return {path: responseData+'/routerequest', method:'POST'}; }else{console.log(responseData);} }
-if(data=='callback'){if(type=='getpath'){ return {path: responseData+'/callback', method:'POST'}; }else{console.log(responseData);} } 
+  if(data=='addtosubscriptions'){if(type=='getpath'){ return {path: responseData+'/addtosubscriptions', method:'POST'}; }else{/*console.log(responseData);*/} }
+if(data=='rateoffer'){if(type=='getpath'){ return {path: responseData+'/rateoffer', method:'POST'}; }else{/*console.log(responseData);*/} } 
+if(data=='routerequest'){if(type=='getpath'){ return {path: responseData+'/routerequest', method:'POST'}; }else{/*console.log(responseData);*/} }
+if(data=='callback'){if(type=='getpath'){ return {path: responseData+'/callback', method:'POST'}; }else{/*console.log(responseData);*/} } 
  }
 };
 
@@ -73,7 +73,7 @@ if(data=='callback'){if(type=='getpath'){ return {path: responseData+'/callback'
 //функция получения данных с сервера
 this.getdataserver=function(parent, data, variable){
 if(requestnow==1 && parent!=='login'){
-	console.log(parent);
+	/*console.log(parent);*/
 	_this.tryes=_this.tryes+1;
 	if(_this.tryes>3){
 		requestnow=0;
@@ -101,7 +101,7 @@ requestnow=1;
   contentType: 'application/x-www-form-urlencoded', // 'application/json',
   data: data,
   error: function (xhr) {
-	console.log(_this.tryes, requestnow);
+	/*console.log(_this.tryes, requestnow);*/
 
    if(xhr.status==200){
    var responseData = JSON.parse(xhr.responseText);	
@@ -237,16 +237,19 @@ this.createMap = function (responseData) {
     if(responseData!==undefined){
 	ymaps.geolocation.get().then(function (res) {
         // Предполагается, что на странице подключен jQuery
-
+   lat=res.geoObjects.position[0];
+   lng=res.geoObjects.position[1];
         myMap = new ymaps.Map("map", {
-            center: [res.geoObjects.position[0],res.geoObjects.position[1]],
+            center: [lat, lng],
             zoom: 9
         });
+		
+	//	myMap.setCenter([lat, lng], 9);
 	  selfPosition = new ymaps.GeoObject({
         geometry: {
           type: "Point",
 		  preset:'islands#blueCircleDotIcon',
-          coordinates: [res.geoObjects.position[0],res.geoObjects.position[1]] // координаты точки
+          coordinates: [lat, lng] // координаты точки
        }
        });
 	myMap.geoObjects.add(selfPosition); 
@@ -269,7 +272,7 @@ myObjectManager.objects.options.set({
                    
                   },
                 function (error) {
-                    console.log(error.message);
+                   // console.log(error.message);
                 }
             );
         }
@@ -287,12 +290,6 @@ myObjectManager.objects.options.set({
             });
         }
     }
-	
-
-
-	
-	
-	
     myObjectManager.options.set('geoObjectOpenBalloonOnClick', false);
 	myObjectManager.clusters.options.set({
     preset: 'islands#invertedDarkOrangeClusterIcons',
@@ -312,14 +309,10 @@ myObjectManager.objects.options.set({
   myObjectManager.objects.events.add('click', function (e) {
     vicFunc.getdataserver('map_detail', {orders_ids:[e.get('objectId')]} ); 
 });  
-  
-  
         myObjectManager.add(myObjects);        
         myMap.geoObjects.add(myObjectManager);  
-     	
-		
 		}, function (e) {
-			console.log(e);
+			//console.log(e);
 		});
     
     }
