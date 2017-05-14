@@ -14,12 +14,12 @@ function victoryExchangeFunc() {
 //функция распределения данных с параметром type = getpath, и получения нужного пути с параметром type = setdata
 //responseData - может принимать значение ID
 this.route = function(type, data, responseData){
- if(data=='list'){if(type=='getpath'){ return {path:'list', method:'GET'}; }else { _this.routesshow(responseData,'#listblocks');} }
+ if(data=='list'){if(type=='getpath'){ return {path:'list', method:'GET'}; }else {search=1;  _this.routesshow(responseData,'#listblocks');} }
  if(data=='map_points'){if(type=='getpath'){ return {path:'map/points', method:'POST'}; }else{ _this.createMap(responseData);/* _this.getdataserver('cargo_types'); */ } }
  if(data=='person'){if(type=='getpath'){ return {path:'settings/profile/edit', method:'GET'}; }else{ _this.setUserProfile(responseData);} }
  if(data=='firstperson'){if(type=='getpath'){ return {path:'settings/profile/edit', method:'GET'}; }else{ _this.openfirst(responseData);} }
 
- if(data=='orders'){if(type=='getpath'){ return {path:'orders', method:'GET'}; }else{ _this.routesshow(responseData,'#routesblocks');} }
+ if(data=='orders'){if(type=='getpath'){ return {path:'orders', method:'GET'}; }else{search=1;  _this.routesshow(responseData,'#routesblocks');} }
  if(data=='map_detail'){if(type=='getpath'){ return {path:'map/points/info', method:'POST'}; }else{map_Routes_Detail=responseData; _this.mapRoutesDetail(responseData);} } 
  
  if(data=='login'){if(type=='getpath'){ return {path:'login/', method:'POST'}; }else{ console.log(responseData);}  } 
@@ -30,7 +30,7 @@ this.route = function(type, data, responseData){
  if(data=='person_edit'){if(type=='getpath'){ return {path:'settings/profile/edit', method:'POST'}; }else{ console.log(responseData);} }/*редактирование пользователя*/
  if(data=='map'){if(type=='getpath'){ return {path: 'map', method:'POST'}; }else{  myApp.closePanel(); _this.createMap(responseData);} }
  
- if(data=='list_search'){if(type=='getpath'){ return {path: 'list', method:'POST'}; }else{  myApp.closePanel(); _this.routesshow(responseData,'#listblocks'); } }
+ if(data=='list_search'){if(type=='getpath'){ return {path: 'list', method:'POST'}; }else{  myApp.closePanel(); search=0; _this.routesshow(responseData,'#listblocks'); } }
   
  if(data=='car_types'){if(type=='getpath'){ return {path:'settings/cars/types', method:'GET'}; }else{ car_types=responseData; vicFunc.carsshow();}}
  
@@ -541,7 +541,7 @@ this.savecardata=function(responseData){
 	routeHtml='<div class="routeblock"><div class="nodata">Маршрутов не обнаружено</div></div>';
 	}
 	//routesshow
-	if(parent=='#listblocks'){
+	if(parent=='#listblocks' && search==1){
 	 pagelistload=responseData.current_page+1;
 	 last_page=responseData.last_page;
  	 routeHtml=$$(parent).html()+routeHtml;
@@ -614,32 +614,32 @@ this.openfirst = function(responseData){
 		islogins= false;
 		login='';
 		password='';
+		mainView.router.loadPage("index.html");
 		myApp.loginScreen();
 		});
 	
 	 $$('#menumap').on('click', function () {	
-	mainView.router.loadPage("pages/map.html");
+	
 	myApp.closeModal('.picker-modal.modal-in');
 	});
 	$$('#menulist').on('click', function () {
-	   mainView.router.loadPage("pages/list.html");
+	
 	   myApp.closeModal('.picker-modal.modal-in');
 	});
 	if(userProfileData.role_id==7){
-	$$('#menuroutes').on('click', function () {
-	   mainView.router.loadPage("pages/routes.html");
+	$$('#menuroutes').on('click', function () {	
 	   myApp.closeModal('.picker-modal.modal-in');
 	});
 	$$('#menutiket').on('click', function () {
-	   mainView.router.loadPage("pages/message.html");
+	
 	   myApp.closeModal('.picker-modal.modal-in');
 	});
 	$$('#menusubscribe').on('click', function () {
-	   mainView.router.loadPage("pages/subscribe.html");
+	
 	   myApp.closeModal('.picker-modal.modal-in');
 	});
 	$$('#menucars').on('click', function () {
-	   mainView.router.loadPage("pages/cars.html");
+	
 	   myApp.closeModal('.picker-modal.modal-in');
 	});
 	if(responseData.cars.length==0){
@@ -655,7 +655,7 @@ this.openfirst = function(responseData){
   );
 	
 	$$('#addcar').on('click', function () {
-	   mainView.router.loadPage("pages/cars.html");
+	 
 	    myApp.popup('.popup-addcars');
 		 myApp.closeModal('.picker-modal.modal-in');
 	});
@@ -667,11 +667,8 @@ this.openfirst = function(responseData){
 	$$('#menucars').remove();		
 	}
 	$$('#menuperson').on('click', function () {
-	   mainView.router.loadPage("pages/person.html");
 	   myApp.closeModal('.picker-modal.modal-in');
 	});
-	
-	
 	mainView.router.loadPage('pages/map.html');   
 }
 }
