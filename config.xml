@@ -29,9 +29,9 @@
         <icon src="images/pages/logo.png" platform="android" qualifier="xxhdpi" />
         <icon src="images/pages/logo.png" platform="android" qualifier="fr-xxhdpi" />
         <manifest>
-        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-        <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" /> 
+        <uses-permission name="android.permission.ACCESS_COARSE_LOCATION" />
+        <uses-permission name="android.permission.ACCESS_FINE_LOCATION" />
+        <uses-permission name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" /> 
         </manifest>
     </platform>
     <platform name="ios">
