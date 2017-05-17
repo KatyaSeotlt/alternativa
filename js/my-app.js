@@ -136,7 +136,7 @@ myApp.addView('.view-right', {
     if(openRoute!==0){
     vicFunc.getdataserver('addtosubscriptions','', openRoute);
     }
-    myApp.closeModal('.popup-action');
+   // myApp.closeModal('.popup-action');
  });  
   if(userProfileData.role_id==7){
  $$('#get-route-action').on('click', function () {
@@ -170,11 +170,12 @@ myApp.addView('.view-right', {
  });  
  $$('#question-action').on('click', function () {
     if(openRoute!==0){
+     myApp.popup('.popup-addticket');
+     
    // vicFunc.getdataserver('callback','', openRoute);
     }
-    myApp.closeModal('.popup-action');
- });
-  $$('#question-action').remove();
+   
+ }); 
   }else{
    $$('#question-action').remove();
    $$('#call-action').remove();
@@ -436,7 +437,8 @@ myApp.onPageInit('message', function (page) {
         var theme=$$('#themeid').val();
         var msg=$$('#themenewmsg').val();
         if(theme!=='' && msg!==''){
-        vicFunc.getdataserver('ticket_message', $$.serializeObject({message:msg}), theme);
+            var data={message:msg};
+        vicFunc.getdataserver('ticket_message', data, theme);
         }
     });
     
@@ -469,13 +471,12 @@ myApp.onPageInit('registration', function () {
  $$('form#reg-form').on('submitError', function (data) {
   if(data.detail.xhr.status==422){
    var msg=JSON.parse(decodeURI(data.detail.xhr.responseText));
-   var html='';
+   var html='';     
    for (var prop in msg) {
-    html=html+'<br>'+msg[prop][0];
+   $$('form#reg-form #'+prop+'-error').text(msg[prop][0]);  
    }
-   $$('#msgreg').html(html);
-  }     
- myApp.popup('.popup-registrationerror');
+   }    
+ 
  });
  $$('form#reg-form').on('submitted', function () {
   myApp.popup('.popup-registrationsms');
@@ -492,7 +493,7 @@ myApp.onPageInit('registration', function () {
  });
 });
 
-// Option 2. Using one 'pageInit' event handler for all pages:
+
 $$(document).on('pageInit', function (e) {
     var page = e.detail.page;
     myApp.closePanel();
@@ -504,7 +505,7 @@ $$(document).on('pageInit', function (e) {
     $$('#search_save').on('click', function(){
            // vicFunc.getdataserver('car_create', data);	
         } );
-     if (vicFunc.isLogin()) { 
+    if (vicFunc.isLogin()) { 
     $$('.smart-select-popup').on('close', function(){ 
         myApp.openPanel('right');      
      });
@@ -520,7 +521,7 @@ $$(document).on('pageBack', function (e) {
 
 
 /*popup окна*/
-    $$('#per_km').on('change', function(){
+$$('#per_km').on('change', function(){
         if($$(this).prop('checked')===true){
             $$('#perkm').html('RUB/КМ');
         }else{
@@ -618,5 +619,12 @@ if(myApp.mainView.activePage.name==='map'){
     }
     });
 
-
+$$("#savequestion").on('click', function(){
+if(openRoute!==0 && $$('#questionforroute').val()!=''){
+       var theme=openRoute;
+       var msg=$$('#questionforroute').val();
+       var data ={subject:msg};
+        vicFunc.getdataserver('ticket_order', data, theme);       
+    }    
+});
     

@@ -46,15 +46,24 @@ this.route = function(type, data, responseData){
  
  
   if(responseData!==undefined){
- if(data=='rateoffer'){if(type=='getpath'){ return {path: responseData+'/rateoffer', method:'POST'}; }else{ /*console.log(responseData);*/} } 
- if(data=='routerequest'){if(type=='getpath'){ return {path: responseData+'/routerequest', method:'POST'}; }else{/* console.log(responseData);*/} } 
- if(data=='addtosubscriptions'){if(type=='getpath'){ return {path: responseData+'/addtosubscriptions', method:'POST'}; }else{ /*console.log(responseData);*/} } 
+
  if(data=='callback'){if(type=='getpath'){ return {path: responseData+'/callback', method:'POST'}; }else{/* console.log(responseData);*/} }  
  if(data=='orders_nextstate'){if(type=='getpath'){ return {path: 'orders/'+responseData+'/nextstate', method:'POST'}; }else{ /*console.log(responseData);*/} } 
  if(data=='ticket_view'){if(type=='getpath'){ return {path:'tickets-list/'+responseData+'/view', method:'GET'}; }else{ _this.ticketThemeView(responseData);} } 
- if(data=='ticket_message'){if(type=='getpath'){ return {path:'tickets-list/'+responseData+'/message', method:'POST'}; }else{ /*console.log(responseData);*/} } 
+ if(data=='ticket_message'){if(type=='getpath'){ return {path:'tickets-list/'+responseData+'/message', method:'POST'}; }else{ /*console.log(responseData);*/
+		var theme=$$('#themeid').val();	
+		 if(theme!==undefined){			
+		 _this.getdataserver('ticket_view','', theme);
+		 $$('#themenewmsg').val('');	
+		 };
+		 
+		 } } 
  if(data=='ticket_close'){if(type=='getpath'){ return {path:'tickets-list/'+responseData+'/close', method:'POST'}; }else{ /*console.log(responseData);*/} } 
- if(data=='ticket_order'){if(type=='getpath'){ return {path: responseData+'/ticket', method:'POST'}; }else{ /*console.log(responseData);*/} } 
+ if(data=='ticket_order'){if(type=='getpath'){ return {path: responseData+'/ticket', method:'POST'}; }else{
+	myApp.closeModal('.popup-addticket');
+	$$('#msg-info-popup').html('Тикет создан');
+	 myApp.popup('.popup-info');
+	 } } 
  if(data=='delete_subscriptions'){if(type=='getpath'){ return {path:'settings/subscriptions/'+responseData+'/delete', method:'DELETE'}; }else{ }} 
   if(data=='enable_subscriptions'){if(type=='getpath'){ return {path:'settings/subscriptions/'+responseData+'/enable', method:'POST'}; }else{ }}
 
@@ -62,10 +71,23 @@ this.route = function(type, data, responseData){
  if(data=='enable_cars'){if(type=='getpath'){return {path:'settings/cars/'+responseData+'/enable', method:'POST'};}else{}}    
  if(data=='car_edit'){if(type=='getpath'){ return {path:'settings/cars/'+responseData+'/edit', method:'POST'}; }else{ /*console.log(responseData);*/} }
  if(data=='get_car_edit'){if(type=='getpath'){ return {path:'settings/cars/'+responseData+'/edit', method:'GET'}; }else{ _this.changeCar(responseData);} }    
-  if(data=='addtosubscriptions'){if(type=='getpath'){ return {path: responseData+'/addtosubscriptions', method:'POST'}; }else{/*console.log(responseData);*/} }
-if(data=='rateoffer'){if(type=='getpath'){ return {path: responseData+'/rateoffer', method:'POST'}; }else{/*console.log(responseData);*/} } 
-if(data=='routerequest'){if(type=='getpath'){ return {path: responseData+'/routerequest', method:'POST'}; }else{/*console.log(responseData);*/} }
-if(data=='callback'){if(type=='getpath'){ return {path: responseData+'/callback', method:'POST'}; }else{/*console.log(responseData);*/} } 
+  if(data=='addtosubscriptions'){if(type=='getpath'){ return {path: responseData+'/addtosubscriptions', method:'POST'}; }else{
+   $$('#msg-info-popup').html('Маршрут добавлен в подписки');
+   myApp.popup('.popup-info');
+  }}
+if(data=='rateoffer'){if(type=='getpath'){ return {path: responseData+'/rateoffer', method:'POST'}; }else{
+	$$('#msg-info-popup').html('Заявка направлена оператору');
+	 myApp.popup('.popup-info');
+	}}
+
+if(data=='routerequest'){if(type=='getpath'){ return {path: responseData+'/routerequest', method:'POST'}; }else{
+	$$('#msg-info-popup').html('Заявка направлена оператору');
+	 myApp.popup('.popup-info');
+	} }
+if(data=='callback'){if(type=='getpath'){ return {path: responseData+'/callback', method:'POST'}; }else{
+	$$('#msg-info-popup').html('Заявка направлена оператору');
+	 myApp.popup('.popup-info');
+	} } 
  }
 };
 
@@ -104,7 +126,10 @@ requestnow=1;
 	/*console.log(_this.tryes, requestnow);*/
 
    if(xhr.status==200){
-   var responseData = JSON.parse(xhr.responseText);	
+	var responseData ='';
+	if(xhr.responseText!=''){
+   var responseData = JSON.parse(xhr.responseText);
+	}
 	_this.route('setdata',parent,responseData);
    if(parent!=='login'){
 	_this.tryes=0;
@@ -239,11 +264,16 @@ this.createMap = function (responseData) {
         // Предполагается, что на странице подключен jQuery
    lat=res.geoObjects.position[0];
    lng=res.geoObjects.position[1];
+   if(myMap===false){
         myMap = new ymaps.Map("map", {
             center: [lat, lng],
             zoom: 9
         });
-		
+   }else{
+	
+	myMap.geoObjects.removeAll();
+	}
+   
 	//	myMap.setCenter([lat, lng], 9);
 	  selfPosition = new ymaps.GeoObject({
         geometry: {
@@ -594,6 +624,7 @@ this.setUserProfileEdit = function(){
 	if(userProfileData.roles.id==7){$$('.forUr').show();}else{$$('.forUr').hide();}
 	$$('#save').on('click', function () {
 		  data =  myApp.formToJSON($$('#edit-profile-form'));
+		  data['user']=userProfileData.id;
 		 _this.getdataserver('person_edit', data);		 
 	});
 }
