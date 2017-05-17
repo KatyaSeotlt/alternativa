@@ -264,7 +264,7 @@ this.createMap = function (responseData) {
         // Предполагается, что на странице подключен jQuery
    lat=res.geoObjects.position[0];
    lng=res.geoObjects.position[1];
-   if(myMap===false){
+   if(myMap===false || $$('#map').html()==''){
         myMap = new ymaps.Map("map", {
             center: [lat, lng],
             zoom: 9
