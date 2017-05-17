@@ -218,13 +218,13 @@ myApp.onPageInit('map-routes', function (page) {
      var publicprice='';
      if(price>0){publicprice=price+'RUB/KM';}
  html = html+'<div class="swiper-slide blok">'+
-'<img class="fon" src="../images/pages/top_routemodal.jpg" /><div class="head">'+
+'<img class="fon" src="images/pages/top_routemodal.jpg" /><div class="head">'+
 '<div class="head2">'+
 '<p class="zvezd"><a><i class="ico '+subscribecss+'"></i></a></p>'+
 '<p class="zvezd"><a>'+denger+'</a><a>'+cars+'</a></p>'+
 '</div>'+
 '<div class="head3"><p><span class="ico icon-dates"></span><span>'+vicFunc.getmyDateFormat(map_Routes_Detail[i]['loading'])+'</span> - <span>'+vicFunc.getmyDateFormat(map_Routes_Detail[i]['unloading'])+'</span></p></div>'+
-'<div class="head4"><a class="add_dispatch" name="'+map_Routes_Detail[i].id+'"><img src="../images/pages/dispether2.png" /></a></div>'+
+'<div class="head4"><a class="add_dispatch" name="'+map_Routes_Detail[i].id+'"><img src="images/pages/dispether2.png" /></a></div>'+
 '</div>'+
 '<div class="mesto">'+
 '<span class="icon_map_routes "></span>'+
@@ -242,7 +242,7 @@ myApp.onPageInit('map-routes', function (page) {
 '<span class="gorod2">Расстояние</span>'+
 '<span class="gorod">'+map_Routes_Detail[i].route_length+' км</span>'+
 '</p>'+
-'<p><div class="border showinmap" from="'+map_Routes_Detail[i].startpoint[0]+'" to="'+map_Routes_Detail[i].endpoint[0]+'"><img src="../images/pages/ic_explore_blue.svg" /></div></p>'+
+'<p><div class="border showinmap" from="'+map_Routes_Detail[i].startpoint[0]+'" to="'+map_Routes_Detail[i].endpoint[0]+'"><img src="images/pages/ic_explore_blue.svg" /></div></p>'+
 '</div>'+
 '<div class="cena">'+
 '<p class="mesto3">'+
