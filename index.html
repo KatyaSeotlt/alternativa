@@ -511,6 +511,9 @@
                                 <ul>
                                     <li><button type="submit"  class="button item-link btn-main" id="enter">ВОЙТИ</button></li>
                                 </ul>
+                                <!--div class="list-block-label">
+                                    <div id="newpasswordstep1">Я забыл пароль</div>
+                                </div-->
                             </div>
                         </form>
                         <a href="pages/registration.html" class="link bottomplansh">СОЗДАТЬ АККАУНТ</a>      
@@ -529,6 +532,19 @@
                 <p><a href="#" class="close-popup">Закрыть</a></p>      
             </div>
         </div>
+        
+        <!--Выслать активационный SMS для регистрации-->
+        <div class="popup popup-standart popup-sendregistrationsms phone">
+            <div class="content-block">              
+                <div class="item-content">
+                    <p class="names">Ваш аккаунт не активирован. <br>Отправить код активации на указанный телефон?</p>
+                </div> 
+            </div>
+            <div class="button_container">
+             <button class="button close-popup">ОТМЕНА</button><button id="sendmesms" class="button active">ОТПРАВИТЬ</button>
+            </div>
+        </div>
+        
         <!--Подверждение по SMS после регистрации-->
         <div class="popup popup-standart popup-registrationsms phone">
             <form id="activation-form" class="ajax-submit" method="POST">
@@ -888,11 +904,13 @@
           <!--карта для определения расстояний-->
            <div id="mapdummy"></div>
               <!--Все всплывающие окна здесь закончились-->     
-        <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+     
+      <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
       <script type="text/javascript" src="cordova.js"></script>
       <script type="text/javascript" src="lib/framework7/js/framework7.js"></script>
       <script type="text/javascript" src="js/application_function.js"></script>
       <script type="text/javascript" src="js/my-app.js"></script>   
+
     </body>
 
 </html>
