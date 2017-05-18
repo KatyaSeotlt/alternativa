@@ -12,6 +12,7 @@ function victoryExchangeFunc() {
 		if(window.localStorage.getItem("password")!=undefined && window.localStorage.getItem("login")!=undefined ){
 		 login=window.localStorage.getItem("login");
 		 password=window.localStorage.getItem("password");
+		 islogins=true;
 		}
 		}
         return islogins;
