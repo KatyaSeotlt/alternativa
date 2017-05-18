@@ -56,14 +56,39 @@ $$(document).on('deviceready', function () {
         html=html+'<br>'+msg[i][0];
        }
         $$('#entererror').html(html);
-      }     
-    myApp.popup('.popup-wrongpass');
+        myApp.popup('.popup-wrongpass');
+      }
+    if(data.detail.xhr.status==401){
+     msg=JSON.parse(decodeURI(data.detail.xhr.responseText));
+     if(msg.message=='auth.activation'){
+        $$('#sendmesms').on('click', function () {
+         data={resend_token: msg.resend_token};
+         vicFunc.getdataserver('activationuserlogin',data);
+         myApp.popup('.popup-registrationsms');
+        });
+        myApp.popup('.popup-sendregistrationsms');
+        } 
+     }    
+    
    myApp.loginScreen();
   });
- //авторизация удалась 
+ //активация удалась
+   $$('form#activation-form').on('submitted', function (data,status, xhr) {
+   myApp.closeModal('.popup-registrationsms');
+   	$$('#msg-info-popup').html('Активация прошла успешно');
+	myApp.popup('.popup-info');
+  });
+ //активация не удалась
+  $$('form#activation-form').on('submitError', function (data,status, xhr) {
+    myApp.closeModal('.popup-registrationsms');
+   	$$('#msg-info-popup').html('Активация не удалась');
+	myApp.popup('.popup-info');
+  });
   $$('form#login-form').on('submitted', function (data,status, xhr) {
    password=$$('form#login-form input[name=password]').val();
    login=$$('form#login-form input[name=phone]').val().replace('+7', 8);
+   window.localStorage.setItem("login", login);
+   window.localStorage.setItem("password", password);
    msg=JSON.parse(decodeURI(data.detail.xhr.responseText)); 
    islogins=true;
    access_token='Bearer '+msg.access_token;//data.detail.xhr.getResponseHeader('Authorization').replace('Bearer ', ''); 

@@ -8,6 +8,12 @@ function victoryExchangeFunc() {
 //функция проверки есть авториирован ли пользователь Если нет, выводим форму авторизации
 	var activeCitySearch='';//объект последнего поиска города. 
     this.isLogin = function () {
+		if(islogins!==true){
+		if(window.localStorage.getItem("password")!=undefined && window.localStorage.getItem("login")!=undefined ){
+		 login=window.localStorage.getItem("login");
+		 password=window.localStorage.getItem("password");
+		}
+		}
         return islogins;
     };
 
@@ -23,7 +29,8 @@ this.route = function(type, data, responseData){
  if(data=='map_detail'){if(type=='getpath'){ return {path:'map/points/info', method:'POST'}; }else{map_Routes_Detail=responseData; _this.mapRoutesDetail(responseData);} } 
  
  if(data=='login'){if(type=='getpath'){ return {path:'login/', method:'POST'}; }else{/* console.log(responseData);*/}  } 
- 
+  if(data=='activationuserlogin'){if(type=='getpath'){ return {path:'resend/', method:'POST'}; }else{ console.log(responseData); }  }
+  
   if(data=='cities_search'){if(type=='getpath'){ return {path:'cities/'+responseData, method:'GET'}; }else{cityIsSearched=0; _this.createDivCity(responseData);}  } 
  
  
