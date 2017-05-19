@@ -471,7 +471,7 @@
                   <!-- Scrollable page content -->
                   <div class="page-content bgBlack">
                      <div class="content-block">
-                        <!--div class="button item-link btn-main" onclick=" myApp.loginScreen();">Войти</div>
+                        <div class="button item-link btn-main" onclick=" myApp.loginScreen();">Войти</div>
                         <!-- Link to another page -->                     
                      </div>
                   </div>
@@ -486,14 +486,14 @@
                 <div class="page">
                     <div class="page-content login-screen-content bgBlack">
                         <img class="logo" src="images/pages/logo.png"/>
-                        <form id="login-form"  class="ajax-submit" autocomplete="off" method="POST" >
+                        <div id="login-form">
                             <div class="list-block">
                                 <ul>
                                     <li class="item-content">
                                         <div class="item-logo">
                                             <div class="item-title label">Номер телефона</div>
                                             <div>
-                                                <input type="text" name="phone" class="input-text" placeholder="+79999999999" v="89277889840" value="" v="+79649661191">
+                                                <input type="phone" name="phone" id="loginPhone" class="input-text" placeholder="+79999999999" v="89277889840" value="" v="+79649661191">
                                             </div>
                                         </div>
                                     </li>
@@ -501,7 +501,7 @@
                                         <div class="item-logo">
                                             <div class="item-title label">Пароль</div>
                                             <div>
-                                                <input type="password" name="password" class="input-text" placeholder="*********" v="Nemec123" value="" v="000000">
+                                                <input type="password" name="password" id="loginPassword" class="input-text" placeholder="*********" v="Nemec123" value="" v="000000">
                                             </div>
                                         </div>
                                     </li>
@@ -509,13 +509,13 @@
                             </div>
                             <div class="list-block">
                                 <ul>
-                                    <li><button type="submit"  class="button item-link btn-main" id="enter">ВОЙТИ</button></li>
+                                    <li><button class="button item-link btn-main" id="enter">ВОЙТИ</button></li>
                                 </ul>
                                 <!--div class="list-block-label">
                                     <div id="newpasswordstep1">Я забыл пароль</div>
                                 </div-->
                             </div>
-                        </form>
+                        </div>
                         <a href="pages/registration.html" class="link bottomplansh">СОЗДАТЬ АККАУНТ</a>      
                     </div>
                 </div>
@@ -905,11 +905,14 @@
            <div id="mapdummy"></div>
               <!--Все всплывающие окна здесь закончились-->     
      
-      <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
-      <script type="text/javascript" src="cordova.js"></script>
-      <script type="text/javascript" src="lib/framework7/js/framework7.js"></script>
-      <script type="text/javascript" src="js/application_function.js"></script>
-      <script type="text/javascript" src="js/my-app.js"></script>   
+
+        <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+        <script type="text/javascript" src="js/cordova.js"></script>
+        <script type="text/javascript" src="lib/framework7/js/framework7.js"></script>
+
+        <script type="text/javascript" src="js/application_function.js"></script>
+        <script type="text/javascript" src="js/my-app.js"></script>
+        <script type="text/javascript" src="js/pages/registration.js"></script>
 
     </body>
 
