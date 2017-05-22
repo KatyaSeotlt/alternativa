@@ -1,6 +1,6 @@
 var islogins= false;
 var sid = false;
-var access_token= false;//Authorization 
+var access_token= false;
 var token_type= false;
 var tocken='Bearer ';
 var serverpath="http://victrack.ru/api/";
@@ -16,7 +16,7 @@ var cityIsSearched=0;
 var loading = 0;
 var last_page=0;
 var pagelistload=0; 
-var openRoute=0; //маршрут открытый на карте
+var openRoute=0;
 var search=1;
 var lastrequest='';
 var lastrequestdata='';
@@ -42,71 +42,63 @@ var mainView = myApp.addView('.view-main', {
 
 // Logins
 $$(document).on('deviceready', function () {    
-    if(window.localStorage.getItem("password")!=undefined && window.localStorage.getItem("login")!=undefined ){
-    login=window.localStorage.getItem("login");
-	password=window.localStorage.getItem("password");
-    var data={phone: login, password:  password};
-    vicFunc.getdataserver('login_first', data);
+    if(window.localStorage.getItem("password")!==undefined && window.localStorage.getItem("password")!==null ){
+    vicFunc.getdataserver('login_first', {phone: window.localStorage.getItem("login"), password:  window.localStorage.getItem("password")});
     }else{
     myApp.loginScreen();
     }
-    
-
 });
 
 myApp.onPageInit('routes', function (page) {vicFunc.getdataserver('orders','{}');});
 
-myApp.onPageInit('list', function (page) {vicFunc.getdataserver('list','{}');
-                 
-                 $$('.infinite-scroll').on('infinite', function () {                   
-                 if(loading===0 && last_page>=pagelistload){
-                   loading=1;
-                   var data={page: pagelistload};
-                   vicFunc.getdataserver('list',data);                 
-                  }
-                 });
+myApp.onPageInit('list', function (page) {
+    vicFunc.getdataserver('list','{}');
+    $$('.infinite-scroll').on('infinite', function () {                   
+     if(loading===0 && last_page>=pagelistload){
+       loading=1;
+       var data={page: pagelistload};
+       vicFunc.getdataserver('list',data);                 
+     }
+   });
 });
 
 myApp.onPageInit('map', function (page) {
-vicFunc.getdataserver('map_points','');
-myApp.addView('.view-right', {
-    name: 'right',
-    domCache:true,
-});
-
-
- $$('#dispetcher').on('click', function () {
-	myApp.popup('.popup-dispetcher');
- });
- $$('#reload').on('click', function () {
-   vicFunc.getdataserver('map_points','');
- });
-
- $$('#close-action').on('click', function () {
-	myApp.closeModal('.popup-action');
- }); 
- 
- $$('#subscribe-action').on('click', function () {
+    vicFunc.getdataserver('map_points','');
+    myApp.addView('.view-right', {
+        name:'right',
+        domCache:true,
+    });
+    
+    $$('#dispetcher').on('click', function () {
+        myApp.popup('.popup-dispetcher');
+    });
+    $$('#reload').on('click', function () {
+        vicFunc.getdataserver('map_points','');
+    });
+    $$('#close-action').on('click', function () {
+        myApp.closeModal('.popup-action');
+    }); 
+    $$('#subscribe-action').on('click', function () {
     if(openRoute!==0){
-    vicFunc.getdataserver('addtosubscriptions','', openRoute);
+        vicFunc.getdataserver('addtosubscriptions','', openRoute);
     }
-   // myApp.closeModal('.popup-action');
- });  
-  if(userProfileData.role_id==7){
- $$('#get-route-action').on('click', function () {
-    if(openRoute!==0){
-    vicFunc.getdataserver('routerequest','', openRoute);
-    }
-    myApp.closeModal('.popup-action');
- });  
+    // myApp.closeModal('.popup-action');
+    });  
+    if(userProfileData.role_id==7){
+        $$('#get-route-action').on('click', function () {
+        if(openRoute!==0){
+          vicFunc.getdataserver('routerequest','', openRoute);
+        }
+        myApp.closeModal('.popup-action');
+        });  
    $$('#rate-action').on('click', function () {
     if(openRoute!==0){
-    myApp.popup('.popup-rateorder');
+       myApp.popup('.popup-rateorder');
     }
- });
-  $$('#saverate').on('click', function () {
+   });
+   $$('#saverate').on('click', function () {
     if(openRoute!==0){
-     var per_km=0;
+    var per_km=0;
     if($$('#per_km').prop('checked')===true){ per_km=1;}
     var data={per_km: per_km, rate: $$('#ratecount').val()};
    /* console.log(data);*/
@@ -114,30 +106,27 @@ myApp.addView('.view-right', {
     }
     myApp.closeModal('.popup-rateorder');
     myApp.closeModal('.popup-action');
- });  
+    });  
   
   $$('#call-action').on('click', function () {
     if(openRoute!==0){
     vicFunc.getdataserver('callback','', openRoute);
     }
     myApp.closeModal('.popup-action');
- });  
- $$('#question-action').on('click', function () {
+  });  
+  $$('#question-action').on('click', function () {
     if(openRoute!==0){
      myApp.popup('.popup-addticket');
-     
-   // vicFunc.getdataserver('callback','', openRoute);
     }
-   
- }); 
+  }); 
   }else{
    $$('#question-action').remove();
    $$('#call-action').remove();
-    $$('#get-route-action').remove();
-      $$('#rate-action').remove();
-        $$('#saverate').remove();
+   $$('#get-route-action').remove();
+   $$('#rate-action').remove();
+   $$('#saverate').remove();
   }
- var myCalendar_search_from = myApp.calendar({
+  var calendar_options={
     input: '#calendar_date_from',
     dateFormat: 'dd.mm.yyyy',
     closeOnSelect: true,
@@ -145,16 +134,11 @@ myApp.addView('.view-right', {
     monthNamesShort:['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг' , 'Сен' , 'Окт', 'Ноя', 'Дек'],
     dayNames: 	['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],
     dayNamesShort: 	['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
-});   
-  var myCalendar_search_to  = myApp.calendar({
-    input: '#calendar_date_to',
-    dateFormat: 'dd.mm.yyyy',
-    closeOnSelect: true,
-    monthNames:['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август' , 'Сентябрь' , 'Октябрь', 'Ноябрь', 'Декабрь'],
-    monthNamesShort:['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг' , 'Сен' , 'Окт', 'Ноя', 'Дек'],
-    dayNames: 	['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],
-    dayNamesShort: 	['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
-});
+  };
+  calendar_options.input='#calendar_date_from';
+  var myCalendar_search_from = myApp.calendar(calendar_options);
+  calendar_options.input='#calendar_date_to';
+  var myCalendar_search_to  = myApp.calendar(calendar_options);
 });
 
 myApp.onPageInit('map-routes', function (page) {
@@ -478,88 +462,59 @@ $$(document).on('pageBack', function (e) {
 
 /*popup окна*/
 $$('#enter').on('click',  function(){
-    password=$$('#loginPassword').val();
-    login=$$('#loginPhone').val().replace('+7', 8);
+    var login=$$('#loginPhone').val().replace('+7', 8);
     window.localStorage.setItem("login", login);
-    window.localStorage.setItem("password", password);
-    var data={phone:login,password:password};
-    vicFunc.getdataserver('login_first', data);    
+    window.localStorage.setItem("password", $$('#loginPassword').val());
+    vicFunc.getdataserver('login_first', {phone:login,password:$$('#loginPassword').val()});    
 });
 
- $$('#activation-form').attr('action', serverpath+'activation/');    
- //активация удалась
-   $$('form#activation-form').on('submitted', function (data,status, xhr) {
-   myApp.closeModal('.popup-registrationsms');
-   	$$('#msg-info-popup').html('Активация прошла успешно');
-	myApp.popup('.popup-info');
-  });
- //активация не удалась
-  $$('form#activation-form').on('submitError', function (data,status, xhr) {
+$$('#activation-form').attr('action', serverpath+'activation/');    
+//активация удалась
+$$('form#activation-form').on('submitted', function (data,status, xhr) {
     myApp.closeModal('.popup-registrationsms');
-   	$$('#msg-info-popup').html('Активация не удалась');
-	myApp.popup('.popup-info');
-  });
+    vicFunc.openInfoPopup('Активация прошла успешно');
+});
+//активация не удалась
+$$('form#activation-form').on('submitError', function (data,status, xhr) {
+    myApp.closeModal('.popup-registrationsms');
+    vicFunc.openInfoPopup('Активация не удалась');
+});
 //Логика восстановления пароля 
-  $$('#newpasswordstep1').on('click', function () {
+$$('#newpasswordstep1').on('click', function () {
    myApp.popup('.popup-newpasswordphone');
-  });
-  $$('#newpasswordstep2').on('click', function () {
+});
+$$('#newpasswordstep2').on('click', function () {
    myApp.closeModal('.popup-newpasswordphone');
    myApp.popup('.popup-newpasswordsms');
-  });
-  $$('#newpasswordstep3').on('click', function () {
+});
+$$('#newpasswordstep3').on('click', function () {
    myApp.closeModal('.popup-newpasswordsms');
    myApp.popup('.popup-newpasswordconfirm');
-  });
-  $$('#newpasswordstep4').on('click', function () {
-   alert('Пароль изменен');
+});
+$$('#newpasswordstep4').on('click', function () {
    myApp.closeModal('.popup-newpasswordconfirm');
-  });
+   vicFunc.openInfoPopup('Пароль изменен');
+});
   
-  /*поиск города*/
-  $$('.city_search').keyup( function () {    
+/*поиск города*/
+$$('.city_search').keyup( function () {    
     var value_seach = $$(this).val();
     if(value_seach.length > 3 && cityIsSearched===0){
        vicFunc.activeCitySearch=$$(this);
        cityIsSearched=1;
-       vicFunc.getdataserver('cities_search','', value_seach);
-       
+       vicFunc.getdataserver('cities_search','', value_seach);       
     }
-  });
-
+});
 $$('#per_km').on('change', function(){
-        if($$(this).prop('checked')===true){
-            $$('#perkm').html('RUB/КМ');
-        }else{
-            $$('#perkm').html('RUB');
-        }
-        });
+    if($$(this).prop('checked')===true){
+        $$('#perkm').html('RUB/КМ');
+    }else{
+        $$('#perkm').html('RUB');
+    }
+});
 
 
 $$('#search_save').on('click', function(){
-   // $('#region_begin').val();
-   // $('#region_end').val();
-   /*	'loading_date_from' => 'date_format:'.config('app.dateFormat'), // +
-			'loading_date_to' => 'date_format:'.config('app.dateFormat'), // +
-			'only_my_cars' => '', // +
-			'only_my_subscriptions' => '', // +
-			'weight_from' => 'integer', // + float?
-			'weight_to' => 'integer', // + float?
-			'volume_from' => 'integer', // + float?
-			'volume_to' => 'integer', // + float?
-			'length_from' => 'integer', // + float?
-			'length_to' => 'integer', // + float?
-			'width_from' => 'integer', // + float?
-			'width_to' => 'integer', // + float?
-			'height_from' => 'integer', // + float?
-			'height_to' => 'integer', // + float?
-			'cargo_type' => 'array', //array IN +
-			'car_type' => 'array', //array HAS +
-			'loading_way' => 'array', //array HAS +
-			'carrier_rate' => 'integer', // + float?
-			'carrier_rate_type' => 'required|in:0,1', //
-			'payment_type' => 'array', //array IN +*/
-   
     var data={};
     if($$('#search_begin_id').val()>0){
     data['from_city']=$$('#search_begin_id').val();

@@ -76,7 +76,7 @@ requestnow=1;
  }else{	
   var header = {'Accept':'application/json', 'X-Requested-With':'XMLHttpRequest'};
  }
-console.log(parent+"/"+access_token);
+ myApp.showIndicator();
  var xhr = $$.ajax({
   method: t.method,
   url: serverpath+t.path,
@@ -88,7 +88,7 @@ console.log(parent+"/"+access_token);
   error: function (xhr) {
     
   if(xhr.status!=401){
-    
+    myApp.hideIndicator();
 		if((parent=='login' || parent=='login_first') && xhr.status==200){
       
 			msg=JSON.parse(decodeURI(xhr.responseText)); 
@@ -115,7 +115,7 @@ console.log(parent+"/"+access_token);
 	_this.tryes=0;
 	 }
    }else if((xhr.status==500 || xhr.status==401 || xhr.status==0) && _this.tryes<2){
-	var data={phone: login, password:  password};
+	var data={phone: window.localStorage.getItem("login"), password:  window.localStorage.getItem("password")};
    setTimeout(function() { _this.getdataserver('login',  data) }, 2000);
 	_this.tryes=_this.tryes+1;
    }else if(xhr.status==422 && parent!='login'){
@@ -128,11 +128,13 @@ console.log(parent+"/"+access_token);
    }
    if(parent=='login_first'){_this.login_first_error(xhr);}
    if(xhr.status>=400 && parent=='cities_search'){
+	myApp.hideIndicator();
 	 cityIsSearched=0;
    }
 
   }, 
  success: function (data) {
+	myApp.hideIndicator();
   var responseData = JSON.parse(data.detail.xhr.responseText);
  	if(parent=='login' || parent=='login_first'){			
 			msg=JSON.parse(decodeURI(data.detail.xhr.responseText)); 
@@ -647,9 +649,8 @@ this.openfirst = function(responseData){
 	$$('#exit_icon').on('click', function () {
 		access_token= false;
 		islogins= false;
-		login='';
-		password='';
     window.localStorage.clear();
+	 myApp.closePanel();
 		mainView.router.loadPage("index.html");
 	//	myApp.loginScreen();
     
