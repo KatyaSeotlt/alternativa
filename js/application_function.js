@@ -1,12 +1,11 @@
 function victoryExchangeFunc() {
 	var _this=this;
-
-	var requestnow=0; //есть ли сейчас запрос
-	var tryes=0; //количество попыток подключения к серверу
-//функция проверки есть авториирован ли пользователь Если нет, выводим форму авторизации
+	
+	var requestnow = 0; //есть ли сейчас запрос
 	var activeCitySearch='';//объект последнего поиска города. 
-    this.isLogin = function () {
-        return islogins;
+//функция проверки есть авториирован ли пользователь Если нет,
+   this.isLogin = function () {
+		return (window.localStorage.getItem("access_token")!==undefined);
     };
 
 //функция распределения данных с параметром type = getpath, и получения нужного пути с параметром type = setdata
@@ -18,7 +17,10 @@ this.route = function(type, data, responseData){
 
  if(data=='orders'){if(type=='getpath'){return{path:'orders',method:'GET'};}else{search=1;_this.routesshow(responseData,'#routesblocks');}}
  if(data=='map_detail'){if(type=='getpath'){return{path:'map/points/info', method:'POST'};}else{map_Routes_Detail=responseData;_this.mapRoutesDetail(responseData);}} 
- if(data=='login_first'){if(type=='getpath'){return{path:'login/', method:'POST'}; }else{islogins=true;_this.getdataserver('firstperson','');}}
+ if(data=='login_first'){if(type=='getpath'){return{path:'login/', method:'POST'}; }else{
+	_this.getdataserver('firstperson','');
+	
+	}}
   if(data=='firstperson'){if(type=='getpath'){return{path:'settings/profile/edit',method:'GET'};}else{_this.openfirst(responseData);}}
  if(data=='login'){if(type=='getpath'){return{path:'login/',method:'POST'};}else{islogins=true;}} 
  if(data=='activationuserlogin'){if(type=='getpath'){return{path:'resend/',method:'POST'};}else{console.log(responseData);}}
@@ -56,101 +58,204 @@ if(responseData!==undefined){
 
 
 //функция получения данных с сервера
-this.getdataserver=function(parent, data, variable){
-if(requestnow==1 && (parent!=='login' || parent!=='login_first')){
-	/*console.log(parent);*/
-	_this.tryes=_this.tryes+1;
-	if(_this.tryes>3){
-		requestnow=0;
-	}
- setTimeout(function() { _this.getdataserver(parent, data, variable) }, 2000);
-}else{
-requestnow=1;
- var t = _this.route('getpath', parent, variable);
- if (data === undefined) {data = '';}
- if(parent!=='login' && parent!=='login_first'){
-	lastrequest=parent;
-	lastrequestdata=data;
-	lastrequestvariable=variable;
-  var header = {Authorization:access_token, 'Accept':'application/json', 'X-Requested-With':'XMLHttpRequest'};
- }else{	
-  var header = {'Accept':'application/json', 'X-Requested-With':'XMLHttpRequest'};
- }
- myApp.showIndicator();
- var xhr = $$.ajax({
-  method: t.method,
-  url: serverpath+t.path,
-  crossDomain: true,
-  dataType: 'json',
-  headers: header,
-  contentType: 'application/x-www-form-urlencoded', // 'application/json',
-  data: data,
-  error: function (xhr) {
-    
-  if(xhr.status!=401){
-    myApp.hideIndicator();
-		if((parent=='login' || parent=='login_first') && xhr.status==200){
-      
-			msg=JSON.parse(decodeURI(xhr.responseText)); 
- 			access_token='Bearer '+msg.access_token;
-			requestnow=0;
-      if(lastrequest!==''){
-			_this.getdataserver(lastrequest,lastrequestdata,lastrequestvariable);
-      lastrequest='';
-      }
-		}else{
-    access_token=xhr.getResponseHeader('Authorization');
-    requestnow=0;
+    /*
+	this.login=function() {
+	
+		var data={phone: window.localStorage.getItem("login"), password:  window.localStorage.getItem("password")};
+		 
+		var header = {'Accept':'application/json', 'X-Requested-With':'XMLHttpRequest'}; 
+		 
+		var xhr = $$.ajax({
+                method: t.method,
+                url: serverpath+t.path,
+                crossDomain: true,
+				dataType: 'json',
+                headers: header,
+                contentType: 'application/x-www-form-urlencoded', // 'application/json',
+                data: data,
+                error: function (xhr) {
+					
+					console.log(xhr);
+					
+				},
+				success: function (data) {
+				
+					console.log(data);
+				
+				},
+		});
+	
+	},
+	*/
+	
+	this.getdataserver=function(parent, data, variable) {
+        
+        var t = _this.route('getpath', parent, variable);
+	//	console.log(requestnow); console.log(access_token); console.log(t.path);
+		
+		/*
+		if(!access_token) {
+		
+		    _this.login();
+		
 		}
-	}
-  
-  
-   if(xhr.status==200){
-	var responseData ='';
-	if(xhr.responseText!=''){
-   var responseData = JSON.parse(xhr.responseText);
-	}
-	_this.route('setdata',parent,responseData);
-   if(parent!=='login' || parent!=='login_first'){
-	_this.tryes=0;
-	 }
-   }else if((xhr.status==500 || xhr.status==401 || xhr.status==0) && _this.tryes<2){
-	var data={phone: window.localStorage.getItem("login"), password:  window.localStorage.getItem("password")};
-   setTimeout(function() { _this.getdataserver('login',  data) }, 2000);
-	_this.tryes=_this.tryes+1;
-   }else if(xhr.status==422 && parent!='login'){
-	 msg=JSON.parse(decodeURI(xhr.responseText));            
-	 var html='';	 
-      for (var i in msg) {html=html+'<br>'+msg[i][0];}
-        $$('#entererror').html(html);
-		//console.log(html);
-        myApp.popup('.popup-wrongpass');
-   }
-   if(parent=='login_first'){_this.login_first_error(xhr);}
-   if(xhr.status>=400 && parent=='cities_search'){
-	myApp.hideIndicator();
-	 cityIsSearched=0;
-   }
+		*/
+		
+		if(requestnow==1 && (parent!=='login' || parent!=='login_first')) {
 
-  }, 
- success: function (data) {
-	myApp.hideIndicator();
-  var responseData = JSON.parse(data.detail.xhr.responseText);
- 	if(parent=='login' || parent=='login_first'){			
-			msg=JSON.parse(decodeURI(data.detail.xhr.responseText)); 
- 			access_token='Bearer '+msg.access_token;
-			requestnow=0;      
-		}else{      
-    access_token=xhr.getResponseHeader('Authorization');
-    requestnow=0;
-		}
-  _this.route('setdata',parent,responseData);
-  
-  }
- });
-  if(t.method=='DELETE'){requestnow=0;}
-	}
-};
+            /*console.log(parent);*/
+
+            _this.tryes=_this.tryes+1;
+
+            if(_this.tryes>3) {
+
+                requestnow=0;
+
+            }
+
+            setTimeout(function() { _this.getdataserver(parent, data, variable) }, 2000);
+
+        }
+
+        else {
+           
+            requestnow=1;
+           
+            var t = _this.route('getpath', parent, variable);
+           
+            if (data === undefined) {
+                data = '';
+            }
+ 
+           if(parent!=='login' && parent!=='login_first') {
+               
+               lastrequest=parent;
+
+               lastrequestdata=data;
+
+               lastrequestvariable=variable;
+               
+               var header = {Authorization:window.localStorage.getItem("access_token"), 'Accept':'application/json', 'X-Requested-With':'XMLHttpRequest'};
+			   
+            }
+            else {
+                var header = {'Accept':'application/json', 'X-Requested-With':'XMLHttpRequest'};
+            }
+
+            myApp.showIndicator();
+
+            var xhr = $$.ajax({
+                method: t.method,
+                url: serverpath+t.path,
+                crossDomain: true,
+				dataType: 'json',
+                headers: header,
+                contentType: 'application/x-www-form-urlencoded', // 'application/json',
+                data: data,
+				error: function (xhr) {
+
+                    
+				console.log('error - '+t.path);
+
+					myApp.hideIndicator();
+					requestnow=0;
+					if(!(xhr.status==500 || xhr.status==401 || xhr.status==400 || xhr.status==0) ) {
+						
+                        if((parent=='login' || parent=='login_first')) {
+							
+                            msg=JSON.parse(decodeURI(xhr.responseText)); 
+
+                            window.localStorage.setItem("access_token", 'Bearer '+msg.access_token);
+
+                            if(lastrequest!=='') {
+
+                                _this.getdataserver(lastrequest,lastrequestdata,lastrequestvariable);
+
+                                lastrequest='';
+                            }
+                        }
+                        else {
+							window.localStorage.setItem("access_token", xhr.getResponseHeader('Authorization'));
+                     
+                        }
+                    }else{
+					  myApp.loginScreen();	
+					  window.localStorage.setItem("access_token", undefined);
+					}
+
+
+                    if(xhr.status==200) {
+
+                        var responseData ='';
+                        if(xhr.responseText!='') {
+
+                           var responseData = JSON.parse(xhr.responseText);
+						   
+                         }
+
+                        _this.route('setdata',parent,responseData);
+                    }
+
+                    else if(xhr.status==422) {
+
+                        msg=JSON.parse(decodeURI(xhr.responseText));
+
+                        var html='';
+
+                        for (var i in msg) {
+                            html=html+'<br>'+msg[i][0];
+                        }
+
+                        $$('#entererror').html(html);
+
+                        myApp.popup('.popup-wrongpass');
+                    }
+
+				   if(parent=='login_first' && xhr.status==401 ) {
+                        _this.login_first_error(xhr);
+                    }
+
+                    if(xhr.status>=400 && parent=='cities_search') {
+
+                        myApp.hideIndicator();
+
+                        cityIsSearched=0;
+
+                    }
+
+                },
+
+                success: function (data) {
+
+                //    console.log('success - '+t.path);
+					
+				//	console.log(data);
+					
+					myApp.hideIndicator();
+
+                    var responseData = JSON.parse(data.detail.xhr.responseText);
+					requestnow=0;
+					console.log(responseData.access_token);
+                    if(responseData.access_token!=undefined) {
+						
+						window.localStorage.setItem("access_token", 'Bearer '+responseData.access_token);
+						
+                      }
+                    else {
+						window.localStorage.setItem("access_token", xhr.getResponseHeader('Authorization'));
+                    }
+                    _this.route('setdata',parent,responseData);
+                }
+
+            });
+
+            if(t.method=='DELETE') {
+
+               requestnow=0;
+
+            }
+        }
+    };
 
 this.ticketThemeView = function (responseData){
 	var html='';
@@ -647,8 +752,8 @@ this.openfirst = function(responseData){
 	$$('.personal_name').text(responseData.name);
 	$$('.personal_type').text(responseData.roles.label);
 	$$('#exit_icon').on('click', function () {
-		access_token= false;
-		islogins= false;
+		//access_token= false;
+		//islogins= false;
     window.localStorage.clear();
 	 myApp.closePanel();
 		mainView.router.loadPage("index.html");

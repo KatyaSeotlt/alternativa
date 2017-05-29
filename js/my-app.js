@@ -1,6 +1,6 @@
 var islogins= false;
 var sid = false;
-var access_token= false;
+//var access_token= false;
 var token_type= false;
 var tocken='Bearer ';
 var serverpath="http://victrack.ru/api/";
@@ -9,8 +9,8 @@ var lat='';
 var lng='';
 var vicFunc = new victoryExchangeFunc();
 var userProfileData=false;
-var login='';
-var password='';
+/*var login='';
+var password='';*/
 var opendopinfo=true;
 var cityIsSearched=0;
 var loading = 0;
@@ -42,25 +42,13 @@ var mainView = myApp.addView('.view-main', {
 
 // Logins
 $$(document).on('deviceready', function () {    
-    if(window.localStorage.getItem("password")!==undefined && window.localStorage.getItem("password")!==null ){
-    vicFunc.getdataserver('login_first', {phone: window.localStorage.getItem("login"), password:  window.localStorage.getItem("password")});
+    if(window.localStorage.getItem("access_token")!==undefined){
+    vicFunc.getdataserver('firstperson','');
     }else{
     myApp.loginScreen();
     }
 });
 
-myApp.onPageInit('routes', function (page) {vicFunc.getdataserver('orders','{}');});
-
-myApp.onPageInit('list', function (page) {
-    vicFunc.getdataserver('list','{}');
-    $$('.infinite-scroll').on('infinite', function () {                   
-     if(loading===0 && last_page>=pagelistload){
-       loading=1;
-       var data={page: pagelistload};
-       vicFunc.getdataserver('list',data);                 
-     }
-   });
-});
 
 myApp.onPageInit('map', function (page) {
     vicFunc.getdataserver('map_points','');
@@ -140,6 +128,23 @@ myApp.onPageInit('map', function (page) {
   calendar_options.input='#calendar_date_to';
   var myCalendar_search_to  = myApp.calendar(calendar_options);
 });
+
+
+
+
+
+myApp.onPageInit('list', function (page) {
+    vicFunc.getdataserver('list','{}');
+    $$('.infinite-scroll').on('infinite', function () {                   
+     if(loading===0 && last_page>=pagelistload){
+       loading=1;
+       vicFunc.getdataserver('list',{page: pagelistload});                 
+     }
+   });
+});
+
+
+myApp.onPageInit('routes', function (page) {vicFunc.getdataserver('orders','{}');});
 
 myApp.onPageInit('map-routes', function (page) {
     	var html='';
@@ -316,11 +321,11 @@ myApp.onPageInit('subscribe', function (page) {
                 if(userProfileData.subscriptions[i].enabled==1){html=html+'Включена'; var check='checked="checked"';
                 }else{html=html+'Выключена';var check='';}
                  html=html+'</div>'+
-					'<label class="label-switch"><input type="checkbox" class="enabled_subscribe" '+check+' name="'+userProfileData.subscriptions[i].id+'"><div class="checkbox"></div></label>'+
+					'<label class="label-switch"><input type="checkbox" class="enabled_subscribe" '+check+' i="'+i+'" name="'+userProfileData.subscriptions[i].id+'"><div class="checkbox"></div></label>'+
 				'</div>'+
 				'<div class="button-container">'+
 					'<!--div class="change_subscribe btn-lite" changeid="'+userProfileData.subscriptions[i].id+'">ИЗМЕНИТЬ</div-->'+
-					'<div class="delete_subscribe btn-lite" deleteid="'+userProfileData.subscriptions[i].id+'">УДАЛИТЬ</div>'+
+					'<div class="delete_subscribe btn-lite"  i="'+i+'" deleteid="'+userProfileData.subscriptions[i].id+'">УДАЛИТЬ</div>'+
 				'</div>'+
 		 '</div>';
         }
@@ -335,17 +340,20 @@ myApp.onPageInit('subscribe', function (page) {
         });
      $$('.delete_subscribe').on('click', function () {
           var delete_id=$$(this).attr('deleteid');
+          var i=$$(this).attr('i');
           vicFunc.getdataserver('delete_subscriptions', {}, delete_id);
           $$('#subsc'+delete_id).remove();
-          
+          userProfileData.subscriptions.splice(i,1);
         });
      $$('.enabled_subscribe').on('change', function () {
        var enabled_id=$$(this).attr('name');
-       if($$(this).prop('checked')===true){  
+       var i=$$(this).attr('i');
+       if($$(this).prop('checked')===true){
+        userProfileData.subscriptions[i].enabled=1;
         vicFunc.getdataserver('enable_subscriptions', {enabled: true}, enabled_id);
        }else{
-        vicFunc.getdataserver('enable_subscriptions', {}, enabled_id);
-        
+        userProfileData.subscriptions[i].enabled=0;
+        vicFunc.getdataserver('enable_subscriptions', {}, enabled_id);        
        }
         });
 
@@ -462,10 +470,7 @@ $$(document).on('pageBack', function (e) {
 
 /*popup окна*/
 $$('#enter').on('click',  function(){
-    var login=$$('#loginPhone').val().replace('+7', 8);
-    window.localStorage.setItem("login", login);
-    window.localStorage.setItem("password", $$('#loginPassword').val());
-    vicFunc.getdataserver('login_first', {phone:login,password:$$('#loginPassword').val()});    
+    vicFunc.getdataserver('login_first', {phone:$$('#loginPhone').val().replace('+7', 8),password:$$('#loginPassword').val()});    
 });
 
 $$('#activation-form').attr('action', serverpath+'activation/');    
@@ -529,11 +534,13 @@ $$('#search_save').on('click', function(){
     data['loading_date_to']=$$('#calendar_date_to').val();
     }
     var only_cars=0;
-    if($$('#only_cars').prop('checked')===true){only_cars=1;}    
+    if($$('#only_cars').prop('checked')===true){only_cars=1;    
     data['only_my_cars']=only_cars;
+    }
     var only_my_subscriptions=0;
-    if($$('#only_subscribe').prop('checked')===true){only_my_subscriptions=1;}        
+    if($$('#only_subscribe').prop('checked')===true){only_my_subscriptions=1;        
     data['only_my_subscriptions']=only_my_subscriptions;
+    }
      if($$('#weight_from').val()!=''){ 
     data['weight_from']=$$('#weight_from').val();
      }
