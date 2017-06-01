@@ -11,6 +11,7 @@ function victoryExchangeFunc() {
 //функция распределения данных с параметром type = getpath, и получения нужного пути с параметром type = setdata
 //responseData - может принимать значение ID
 this.route = function(type, data, responseData){
+    
  if(data=='list'){if(type=='getpath'){return{path:'list', method:'GET'};}else{search=1;_this.routesshow(responseData,'#listblocks');}}
  if(data=='map_points'){if(type=='getpath'){return{path:'map/points',method:'POST'};}else{_this.createMap(responseData);}}
  if(data=='person'){if(type=='getpath'){return{path:'settings/profile/edit',method:'GET'};}else{_this.setUserProfile(responseData);}}
@@ -18,10 +19,9 @@ this.route = function(type, data, responseData){
  if(data=='orders'){if(type=='getpath'){return{path:'orders',method:'GET'};}else{search=1;_this.routesshow(responseData,'#routesblocks');}}
  if(data=='map_detail'){if(type=='getpath'){return{path:'map/points/info', method:'POST'};}else{map_Routes_Detail=responseData;_this.mapRoutesDetail(responseData);}} 
  if(data=='login_first'){if(type=='getpath'){return{path:'login/', method:'POST'}; }else{
-	_this.getdataserver('firstperson','');
-	
+	_this.openfirst(responseData);
 	}}
-  if(data=='firstperson'){if(type=='getpath'){return{path:'settings/profile/edit',method:'GET'};}else{_this.openfirst(responseData);}}
+ if(data=='firstperson'){if(type=='getpath'){return{path:'settings/profile/edit',method:'GET'};}else{userProfileData=responseData; }}
  if(data=='login'){if(type=='getpath'){return{path:'login/',method:'POST'};}else{islogins=true;}} 
  if(data=='activationuserlogin'){if(type=='getpath'){return{path:'resend/',method:'POST'};}else{console.log(responseData);}}
  if(data=='cities_search'){if(type=='getpath'){return{path:'cities/'+responseData,method:'GET'};}else{cityIsSearched=0;_this.createDivCity(responseData);}} 
@@ -156,7 +156,7 @@ if(responseData!==undefined){
 
                     
 				console.log('error - '+t.path);
-
+                            console.log(xhr);
 					myApp.hideIndicator();
 					requestnow=0;
 					if(!(xhr.status==500 || xhr.status==401 || xhr.status==400 || xhr.status==0) ) {
@@ -184,7 +184,7 @@ if(responseData!==undefined){
 					}
 
 
-                    if(xhr.status==200) {
+                  if(xhr.status==200) {
 
                         var responseData ='';
                         if(xhr.responseText!='') {
@@ -227,24 +227,22 @@ if(responseData!==undefined){
 
                 success: function (data) {
 
-                //    console.log('success - '+t.path);
+                   console.log('success - '+t.path);	
 					
-				//	console.log(data);
-					
-					myApp.hideIndicator();
-
-                    var responseData = JSON.parse(data.detail.xhr.responseText);
-					requestnow=0;
-					console.log(responseData.access_token);
-                    if(responseData.access_token!=undefined) {
-						
-						window.localStorage.setItem("access_token", 'Bearer '+responseData.access_token);
-						
+		      myApp.hideIndicator();
+                  
+                   
+                     var responseData = data;
+			requestnow=0;
+                     
+                    if(responseData.access_token!=undefined) {						
+			window.localStorage.setItem("access_token", 'Bearer '+responseData.access_token);
                       }
                     else {
-						window.localStorage.setItem("access_token", xhr.getResponseHeader('Authorization'));
-                    }
-                    _this.route('setdata',parent,responseData);
+			window.localStorage.setItem("access_token", xhr.getResponseHeader('Authorization'));
+                    }                  
+                    vicFunc.route('setdata',parent,responseData);
+                   
                 }
 
             });
@@ -344,18 +342,21 @@ this.ticketThemeCreate = function (responseData){
 this.createMap = function (responseData) {
     var rdata=responseData;
     if(responseData!==undefined){
-	ymaps.geolocation.get().then(function (res) {
-        // Предполагается, что на странице подключен jQuery
+  ymaps.ready(function () {    
+     ymaps.geolocation.get().then(function (res) {
+
    lat=res.geoObjects.position[0];
    lng=res.geoObjects.position[1];
    if(myMap===false || $$('#map').html()==''){
         myMap = new ymaps.Map("map", {
             center: [lat, lng],
-            zoom: 9
+            zoom: 9,
+            controls: ['smallMapDefaultSet']
         });
    }else{
-	
+
 	myMap.geoObjects.removeAll();
+     	myMap.geoObjects.remove(routeApp);
 	}
    
 	//	myMap.setCenter([lat, lng], 9);
@@ -378,8 +379,8 @@ myObjectManager.objects.options.set({
 });
 
     if(subscriptionsfrom!==''){
-	    var mynewroute=new ymaps.route([subscriptionsfrom, subscriptionsto]);           
-           mynewroute.then(
+	     routeApp=new ymaps.route([subscriptionsfrom, subscriptionsto]);           
+           routeApp.then(
                 function (route) {
                    route.options.set("mapStateAutoApply", true);
 				    myMap.geoObjects.add(route);
@@ -428,9 +429,11 @@ myObjectManager.objects.options.set({
 		}, function (e) {
 			//console.log(e);
 		});
-    
+    });
     }
-	
+if(userProfileData==false){ 
+     vicFunc.getdataserver('firstperson','');
+   }
  }; 
 
 /*преобразование даты*/
@@ -463,7 +466,7 @@ this.savecardata=function(responseData){
         '<div class="header">'+
          '<div class="carNumber car_code">' + carList[car].car_code + '</div>'+
          '<div class="region region_code">' + carList[car].region_code + '</div>'+
-         '<div class="status"><div class="label" id="enabled">' + enablesname[ carList[car].enabled ] +'</div>'+
+         '<div class="status"><div class="label" id="enabled_cars'+carList[car].id+'">' + enablesname[ carList[car].enabled ] +'</div>'+
           '<div class="item-input">' +
                 '<label class="label-switch"><input type="checkbox" class="enabled_cars" name="' + carList[car].id + '" ';
                 if( carList[car].enabled ==1){carHtml = carHtml +   'checked="checked"';}
@@ -496,9 +499,11 @@ this.savecardata=function(responseData){
 
 	$$('.enabled_cars').on('change', function () {
        var enabled_id=$$(this).attr('name');
-       if($$(this).prop('checked')==true){  
+       if($$(this).prop('checked')==true){
+         $$('#enabled_cars'+enabled_id).text(enablesname[1]);
         vicFunc.getdataserver('enable_cars', {enabled: true}, enabled_id);
        }else{
+           $$('#enabled_cars'+enabled_id).text(enablesname[0]);
         vicFunc.getdataserver('enable_cars', {}, enabled_id);        
        }
         });
@@ -687,7 +692,7 @@ this.login_first_error = function(responseData){
 this.setUserProfile = function(responseData){
 	userProfileData=responseData;
 	$$('.person-block #tel').html(userProfileData.phone);
-    $$('.person-block #group').html( userProfileData.roles.label);
+    $$('.person-block #group').html(window.localStorage.getItem("role_label"));
 	if(userProfileData.data!==null){
 	$$('.person-block #bank_account').html(userProfileData.data.bank_account);
 	$$('.person-block #bank_bik').html(userProfileData.data.bank_bik);
@@ -732,7 +737,7 @@ this.setUserProfileEdit = function(){
 	}
 	
 	
-	if(userProfileData.roles.id==7){$$('.forUr').show();}else{$$('.forUr').hide();}
+	if(window.localStorage.getItem("role_label")=="Перевозчик"){$$('.forUr').show();}else{$$('.forUr').hide();}
 	$$('#save').on('click', function () {
 		  data =  myApp.formToJSON($$('#edit-profile-form'));
 		  data['user']=userProfileData.id;
@@ -749,27 +754,24 @@ this.ticket_message = function(responseData){
 /*открываем страницу в первый раз*/
 this.openfirst = function(responseData){
 	userProfileData=responseData;
-	$$('.personal_name').text(responseData.name);
-	$$('.personal_type').text(responseData.roles.label);
-	$$('#exit_icon').on('click', function () {
-		//access_token= false;
-		//islogins= false;
-    window.localStorage.clear();
+	$$('.personal_name').text(responseData.user.name);
+	$$('.personal_type').text(responseData.user.role_label);
+     window.localStorage.setItem("name", responseData.user.name);
+     window.localStorage.setItem("role_label", responseData.user.role_label); 
+	mainView.router.loadPage('pages/map.html');  
+	$$('#exit_icon').on('click', function () {		
+      window.localStorage.clear();
 	 myApp.closePanel();
-		mainView.router.loadPage("index.html");
-	//	myApp.loginScreen();
-    
-		});
+	 mainView.router.loadPage("index.html");
+	});
 	
-	 $$('#menumap').on('click', function () {	
-	
-	myApp.closeModal('.picker-modal.modal-in');
+	$$('#menumap').on('click', function () {		
+	 myApp.closeModal('.picker-modal.modal-in');
 	});
 	$$('#menulist').on('click', function () {
-	
-	   myApp.closeModal('.picker-modal.modal-in');
+	 myApp.closeModal('.picker-modal.modal-in');
 	});
-	if(userProfileData.role_id==7){
+	if(userProfileData.user.role_label=="Перевозчик"){
 	$$('#menuroutes').on('click', function () {	
 	   myApp.closeModal('.picker-modal.modal-in');
 	});
@@ -785,7 +787,7 @@ this.openfirst = function(responseData){
 	
 	   myApp.closeModal('.picker-modal.modal-in');
 	});
-	if(responseData.cars.length==0){
+	/*if(responseData.cars.length==0){
 	myApp.pickerModal(
     '<div class="picker-modal addcars-modal">' +
       '<div class="picker-modal-inner">' +
@@ -802,7 +804,7 @@ this.openfirst = function(responseData){
 	    myApp.popup('.popup-addcars');
 		 myApp.closeModal('.picker-modal.modal-in');
 	});
-	}
+	}*/
 	}else{
 	 $$('#menuroutes').remove();
 	$$('#menutiket').remove();
@@ -812,6 +814,6 @@ this.openfirst = function(responseData){
 	$$('#menuperson').on('click', function () {
 	   myApp.closeModal('.picker-modal.modal-in');
 	});
-	mainView.router.loadPage('pages/map.html');   
+        
 }
 }
