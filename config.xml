@@ -32,7 +32,7 @@
         <uses-permission name="android.permission.ACCESS_COARSE_LOCATION" />
         <uses-permission name="android.permission.ACCESS_FINE_LOCATION" />
         <uses-permission name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
-        <activity android:windowSoftInputMode="adjustPan"/>        
+        <activity android:windowSoftInputMode="adjustPan"></activity>        
         </manifest>
     </platform>
     <platform name="ios">
