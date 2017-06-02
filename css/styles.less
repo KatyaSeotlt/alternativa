@@ -266,7 +266,6 @@ width: 100%;
 position: relative;
 text-align: center;    
 }
-
 /*Форма логина*/
 .login-screen {
  
@@ -303,10 +302,10 @@ text-align: center;
  .item-input{
  margin-left: 0px * @dpscale;
  }
-.item-title.label{
+.item-title .label{
     width: 100%;
     color: rgba(255,255,255,1);
-    font-size: 12px * @dpscale;
+    font-size: 14px * @dpscale;
 }
 
 }
@@ -358,6 +357,8 @@ padding-bottom: 10px * @dpscale;
     font-size: 14px * @dpscale;
     height: 48px * @dpscale; /*48dp*/
 	line-height: 48px * @dpscale; 
+    z-index: 10;
+
 }	
 .btn-main{
     border:0px;
@@ -1708,7 +1709,7 @@ flow: row wrap;
 	
 	.top{
 		background: @color-blue;
-		width: 100%;
+		width: 85%;
 		padding-top: 40px * @dpscale;
 		padding-left: 40px * @dpscale;
 		
@@ -1747,7 +1748,7 @@ flow: row wrap;
 		border: 0px;
 		width: 100%;
 		height: 24px  * @dpscale;
-		font-size: 16px * @dpscale;
+		font-size: 14px * @dpscale;
 		color: @color-font-gray-dark;
 	}
 	.address-name{
@@ -2345,4 +2346,24 @@ div.city{ width: 100%; display: block;}
 div.region.region_search_begin{width: 100%; display: block;}
 
 
+}
+.logo2{
+    background-image:url(images/pages/fon.jpq);
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-size: 24px * @dpscale 27px * @dpscale;
+    background-position: 98% 50%;
+    cursor: auto;
+    border: none;
+    min-height: 30px * @dpscale;
+    background: rgba(240, 248, 255, 0);
+    color: white;
+    }
+.gor{
+    width:100%;
+    text-align: left;
+    font-size: 16px * @dpscale;
+    }
+.tex{
+   color: lightgrey;
 }
