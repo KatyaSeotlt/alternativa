@@ -392,7 +392,7 @@
                               </a>
                               <a href="#" class="item-link smart-select" data-open-in="popup"   data-page-title="загрузка транспортa"  data-popup-close-text="закрыть">
                                  <!-- select -->
-                                 <select name="car_in" id="car_in">
+                                 <select name="car_in" id="car_in"  multiple="multiple">
                                     <option value="1">верхняя</option>
                                     <option value="2">боковая</option>
                                     <option value="4">задняя</option>
@@ -415,7 +415,7 @@
                               </a>
                               <a href="#" class="item-link smart-select" data-open-in="popup"   data-page-title="разгрузка транспортa"  data-popup-close-text="закрыть">
                                  <!-- select -->
-                                 <select name="car_out" id="car_out">
+                                 <select name="car_out" id="car_out"  multiple="multiple">
                                     <option value="1">верхняя</option>
                                     <option value="2">боковая</option>
                                     <option value="4">задняя</option>
@@ -467,41 +467,27 @@
             <!-- Pages container, because we use fixed-through navbar and toolbar, it has additional appropriate classes-->
             <div class="pages navbar-through toolbar-through">
                <!-- Page, "data-page" contains page name -->
-               <div data-page="index" class="page">
+               <div data-page="index" class="page ">
                   <!-- Scrollable page content -->
-                  <div class="page-content bgBlack">
-                     <div class="content-block">
-                        <div class="button item-link btn-main" onclick=" myApp.loginScreen();">Войти</div>
-                        <!-- Link to another page -->                     
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-         <!--Все всплывающие окна здесь-->
-        <!--фома логина-->
-        <div class="login-screen">
-            <div class="view">
-                <div class="page">
-                    <div class="page-content login-screen-content bgBlack">
-                        <img class="logo" src="images/pages/logo.png"/>
-                        <div id="login-form">
+                  <div class="page-content login-screen-content bgBlack">
+                     <div class="content-block_">
+                          <img class="logo" src="images/pages/logo.png" style="width: 45vh;/*89px*@dpscale; /*    8vh;;" />
+                        <div id="login-form" style="position: relative; z-index: 20;">
                             <div class="list-block">
-                                <ul>
+                                <ul">
                                     <li class="item-content">
-                                        <div class="item-logo">
-                                            <div class="item-title label">Номер телефона</div>
+                                        <div class="item-logo gor">
+                                            <div class="item-title label tex">Номер телефона</div>
                                             <div>
-                                                <input type="phone" name="phone" id="loginPhone" class="input-text" placeholder="+79999999999" v="89277889840" value="" value_="+79649661191">
+                                                <input type="phone" name="phone" id="loginPhone" class="input-text logo2" placeholder="+79999999999" v="89277889840" value_="" value="+79649661191">
                                             </div>
                                         </div>
                                     </li>
                                     <li class="item-content">
-                                        <div class="item-logo">
-                                            <div class="item-title label">Пароль</div>
+                                        <div class="item-logo gor">
+                                            <div class="item-title labe tex">Пароль</div>
                                             <div>
-                                                <input type="password" name="password" id="loginPassword" class="input-text" placeholder="*********" v="Nemec123" value="" value_="000000">
+                                                <input type="password" name="password" id="loginPassword" class="input-text" placeholder="*********" v="Nemec123" value_="" value="000000" style="color: #ffffff;">
                                             </div>
                                         </div>
                                     </li>
@@ -509,18 +495,32 @@
                             </div>
                             <div class="list-block">
                                 <ul>
-                                    <li><button class="button item-link btn-main" id="enter">ВОЙТИ</button></li>
+                                    <li><button class="button item-link btn-main bt" id="enter_login_form">ВОЙТИ</button></li>
                                 </ul>
                                 <!--div class="list-block-label">
                                     <div id="newpasswordstep1">Я забыл пароль</div>
                                 </div-->
                             </div>
                         </div>
-                        <a href="pages/registration.html" class="link bottomplansh">СОЗДАТЬ АККАУНТ</a>      
+                             <a href="pages/registration.html" class="link bottomplansh">СОЗДАТЬ АККАУНТ</a>             
+                     </div>
+                     
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+         <!--Все всплывающие окна здесь-->
+        <!--фома логина-- >
+        <div class="login-screen">
+            <div class="view">
+                <div class="page">
+                    <div class="page-content login-screen-content bgBlack">
+                           
                     </div>
                 </div>
             </div>
-        </div>
+        </div-->
 
         <!--Перевозчик или менеджер-->
         <div class="popup popup-standart popup-selectgroup info">
