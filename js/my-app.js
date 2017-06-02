@@ -1,6 +1,5 @@
 var islogins= false;
 var sid = false;
-//var access_token= false;
 var token_type= false;
 var tocken='Bearer ';
 var serverpath="http://victrack.ru/api/";
@@ -10,8 +9,6 @@ var lat='';
 var lng='';
 var vicFunc = new victoryExchangeFunc();
 var userProfileData=false;
-/*var login='';
-var password='';*/
 var opendopinfo=true;
 var cityIsSearched=0;
 var loading = 0;
@@ -30,6 +27,7 @@ var loading_types={1:"верхняя",2:"боковая",4:"задняя",8:"с 
 var subscriptionsfrom='';
 var subscriptionsto='';
 var map_Routes_Detail='';
+var loginclickisset=0;
 // Initialize app
 var myApp = new Framework7({
 });
@@ -44,17 +42,28 @@ var mainView = myApp.addView('.view-main', {
 
 // Logins
 $$(document).on('deviceready', function () {    
-    if(window.localStorage.getItem("access_token")!="undefined"){
+    if(vicFunc.isLogin()){
     var dataforopen=[];
     dataforopen.user={name:'',role_label:''};
     dataforopen.user.name= window.localStorage.getItem("name");
     dataforopen.user.role_label= window.localStorage.getItem("role_label");
+    dataforopen.user.role_id= window.localStorage.getItem("role_id");   
     vicFunc.openfirst(dataforopen);
-    }else{
-    myApp.loginScreen();
     }
+    $$('#enter_login_form').on('click',  function(){
+    showlog($$('#loginPhone').val());
+    loginclickisset=1;
+    vicFunc.getdataserver('login_first', {phone:$$('#loginPhone').val().replace('+7', 8),password:$$('#loginPassword').val()});
+    });      
 });
-
+myApp.onPageInit('index', function (page) {
+    if(loginclickisset!=1){
+   $$('#enter_login_form').on('click',  function(){
+    showlog($$('#loginPhone').val());
+    vicFunc.getdataserver('login_first', {phone:$$('#loginPhone').val().replace('+7', 8),password:$$('#loginPassword').val()});    
+    });
+    }
+   });
 
 myApp.onPageInit('map', function (page) {
     vicFunc.getdataserver('map_points','');
@@ -79,7 +88,7 @@ myApp.onPageInit('map', function (page) {
     }
     // myApp.closeModal('.popup-action');
     });  
-    if( window.localStorage.getItem("role_label")==="Перевозчик"){
+ 
         $$('#get-route-action').on('click', function () {
         if(openRoute!==0){
           vicFunc.getdataserver('routerequest','', openRoute);
@@ -96,7 +105,7 @@ myApp.onPageInit('map', function (page) {
     var per_km=0;
     if($$('#per_km').prop('checked')===true){ per_km=1;}
     var data={per_km: per_km, rate: $$('#ratecount').val()};
-   /* console.log(data);*/
+   /* showlog(data);*/
     vicFunc.getdataserver('rateoffer',data, openRoute);
     }
     myApp.closeModal('.popup-rateorder');
@@ -114,7 +123,7 @@ myApp.onPageInit('map', function (page) {
      myApp.popup('.popup-addticket');
     }
   }); 
-  }else{
+   if( !vicFunc.isFullRole()){
    $$('#question-action').remove();
    $$('#call-action').remove();
    $$('#get-route-action').remove();
@@ -275,110 +284,35 @@ $$('.add_dispatch').on('click', function(){
   });
 	});
 myApp.onPageInit('person', function (page) {
-	if(userProfileData!=false){
-	vicFunc.setUserProfile(userProfileData, '.person-block');
-	}else{	
-	vicFunc.getdataserver('person','');
+    showlog(userProfileData.data);
+	if(userProfileData.data==undefined){
+        vicFunc.getdataserver('person','');
+	}else{
+    	vicFunc.setUserProfile(userProfileData, '.person-block');
     }
 	});
 myApp.onPageInit('personedit', function (page) {
-	if(userProfileData!==false){
-	vicFunc.setUserProfileEdit();
+	if(userProfileData.data==undefined){
+        mainView.router.loadPage('pages/person.html');	
 	}else{	
-	mainView.router.loadPage('pages/person.html');
+	vicFunc.setUserProfileEdit();
     }
+    $$('#save_user_profile_edit').on('click', function () {
+		  data =  myApp.formToJSON($$('#edit-profile-form'));
+		  data.user=userProfileData.id;
+		 vicFunc.getdataserver('person_edit', data);		 
 	});
+    
+	});
+
 myApp.onPageInit('subscribe', function (page) {
-    var html='';
-    var dummyMap = new ymaps.Map("mapdummy", {
-        center: [55.751574, 37.573856],
-        zoom: 9
-        });
-      var mynewroute=[];
-  	for (var i in userProfileData.subscriptions) {
-     mynewroute[userProfileData.subscriptions[i].id]=new ymaps.route([userProfileData.subscriptions[i].city_from.CityName, userProfileData.subscriptions[i].city_to.CityName]);   
-      mynewroute[userProfileData.subscriptions[i].id].then(
-       function (route) {
-         var routeLength = route.getLength();
-         for(var t in mynewroute){
-            if(mynewroute[t]._value==route){
-            $$('#longcount'+t).html(routeLength+' км');    
-            }
-         }
-       }
-     );
-        html=html+'<div class="subscribeblock" id="subsc'+userProfileData.subscriptions[i].id+'">'+
-				'<div class="begin">'+
-					'<span class="icon_map_routes"></span>'+
-					'<div class="address-name">'+
-						'<div class="city">'+userProfileData.subscriptions[i].city_from.CityName+'</div>'+
-						'<div class="region">'+userProfileData.subscriptions[i].city_from.RegionName+'</div>'+
-					'</div>'+
-					'<div class="address-name">'+
-						'<div class="city">'+userProfileData.subscriptions[i].city_to.CityName+'</div>'+
-						'<div class="region">'+userProfileData.subscriptions[i].city_to.RegionName+'</div>'+
-					'</div>'+
-				'</div>'+
-				'<div class="itog">'+
-					'<div class="long"><span class="ico icon-dist"></span><span id="longcount'+userProfileData.subscriptions[i].id+'"> </span></div>'+
-					'<div class="compass showinmap" to="'+userProfileData.subscriptions[i].city_to.CityName+'" from="'+userProfileData.subscriptions[i].city_from.CityName+'"><span class="ico icon-compass"></span></div>'+
-				'</div>'+
-				'<div class="stat">'+
-					'<div class="label" id="enabled'+userProfileData.subscriptions[i].id+'">';
-                if(userProfileData.subscriptions[i].enabled==1){html=html+'Включена'; var check='checked="checked"';
-                }else{html=html+'Выключена';var check='';}
-                 html=html+'</div>'+
-					'<label class="label-switch"><input type="checkbox" class="enabled_subscribe" '+check+' i="'+i+'" name="'+userProfileData.subscriptions[i].id+'"><div class="checkbox"></div></label>'+
-				'</div>'+
-				'<div class="button-container">'+
-					'<!--div class="change_subscribe btn-lite" changeid="'+userProfileData.subscriptions[i].id+'">ИЗМЕНИТЬ</div-->'+
-					'<div class="delete_subscribe btn-lite"  i="'+i+'" deleteid="'+userProfileData.subscriptions[i].id+'">УДАЛИТЬ</div>'+
-				'</div>'+
-		 '</div>';
-        }
-    /*		  */
-   $$('#subscribeblocks').html(html);
-
-   $$('.showinmap').on('click', function () {
-        subscriptionsfrom=$$(this).attr('from');
-        subscriptionsto=$$(this).attr('to');
-         mainView.router.loadPage('pages/map.html');
-
-        });
-     $$('.delete_subscribe').on('click', function () {
-          var delete_id=$$(this).attr('deleteid');
-          var i=$$(this).attr('i');
-          vicFunc.getdataserver('delete_subscriptions', {}, delete_id);
-          $$('#subsc'+delete_id).remove();
-          userProfileData.subscriptions.splice(i,1);
-        });
-     $$('.enabled_subscribe').on('change', function () {
-       var enabled_id=$$(this).attr('name');
-       var i=$$(this).attr('i');
-       if($$(this).prop('checked')===true){
-        userProfileData.subscriptions[i].enabled=1;
-        $$('#enabled'+enabled_id).text("Включена");
-        vicFunc.getdataserver('enable_subscriptions', {enabled: true}, enabled_id);
-       }else{
-        userProfileData.subscriptions[i].enabled=0;
-        $$('#enabled'+enabled_id).text("Выключена");
-        vicFunc.getdataserver('enable_subscriptions', {}, enabled_id);        
-       }
-        });
-
-    
-     $$('.addsubscribe').on('click', function () {	
-      myApp.popup('.popup-addsubscribe');            
-    });
-     
-      $$('.save_subscribe').on('click', function () {
-         var data={city_from_id: $$('#begin_id').val(), city_to_id: $$('#end_id').val()};
-         vicFunc.getdataserver('create_subscriptions', data);
-          myApp.closeModal('.popup-addsubscribe');
-        });
-    
-    
-    });
+    showlog(userProfileData.subscriptions);
+  if(userProfileData.subscriptions==undefined){
+    vicFunc.getdataserver('subscriptions','');
+    }else{
+    vicFunc.showSubscribe();    
+    }
+ });
 
 
 myApp.onPageInit('message', function (page) {
@@ -402,9 +336,9 @@ myApp.onPageInit('message', function (page) {
 myApp.onPageInit('cars', function (page) {
 	
 if(car_types===false){	
-vicFunc.getdataserver('car_types',''); 
+    vicFunc.getdataserver('car_types',''); 
 }else{
-vicFunc.carsshow();
+    vicFunc.carsshow();
 }
   
     $$('.addcar').on('click', function () {	
@@ -437,11 +371,13 @@ myApp.onPageInit('registration', function () {
   myApp.popup('.popup-registrationsms');
  });
  $$('select#group').on('keyup keydown change', function () {
+    
   if ($$('select#group').val() === 'partner') {
    $$('.forUr').css('display', 'none');
   } else {
    $$('.forUr').css('display', 'block');
   }
+  myApp.closePanel();
  });
  $$('.open-selectgroup').on('click', function () {
   myApp.popup('.popup-selectgroup');
@@ -454,34 +390,21 @@ $$(document).on('pageInit', function (e) {
     if(page.name!=='index'){
     myApp.closePanel();
     }
-    if (!vicFunc.isLogin() && (page.name !== 'registration') && (page.name.indexOf('smart-select-radio') === -1)) {
-        myApp.loginScreen();
-    } else {
-        myApp.closeModal('.login-screen');
-    }
-    $$('#search_save').on('click', function(){
-           // vicFunc.getdataserver('car_create', data);	
-        } );
-    if (vicFunc.isLogin()) { 
+    if (vicFunc.isLogin()) {        
     $$('.smart-select-popup').on('close', function(){ 
         myApp.openPanel('right');      
      });
      }
-
 });
 $$(document).on('pageBack', function (e) {
     var page = e.detail.page;
     if (!vicFunc.isLogin()) {
-        myApp.loginScreen();
+      mainView.router.loadPage('index.html');
     }
 });
 
 
 /*popup окна*/
-$$('#enter').on('click',  function(){
-    vicFunc.getdataserver('login_first', {phone:$$('#loginPhone').val().replace('+7', 8),password:$$('#loginPassword').val()});    
-});
-
 $$('#activation-form').attr('action', serverpath+'activation/');    
 //активация удалась
 $$('form#activation-form').on('submitted', function (data,status, xhr) {
@@ -598,16 +521,16 @@ $$('#search_save').on('click', function(){
     
     var car_out=[];  
     $$('select#car_out option').each(function(){
-        if($$(this)[0].selected==true){data['car_out']=$$(this).val();/*car_out.push($$(this).val());*/}
+        if($$(this)[0].selected==true){ car_out.push($$(this).val());}
     });   
-    //data['car_out']=car_out;
+   data['car_out']=car_out;
         
     var car_in=[];  
     $$('select#car_in option').each(function(){
-        if($$(this)[0].selected==true){data['car_in']=$$(this).val(); /*car_in.push($$(this).val());*/}
+        if($$(this)[0].selected==true){car_in.push($$(this).val());}
     });   
-    //data['car_in']=car_in;
-//console.log(data);
+    data['car_in']=car_in;
+//showlog(data);
 if(myApp.mainView.activePage.name==='map'){
     vicFunc.getdataserver('map', data);
 }

@@ -5,7 +5,7 @@ function victoryExchangeFunc() {
 	var activeCitySearch='';//объект последнего поиска города. 
 //функция проверки есть авториирован ли пользователь Если нет,
    this.isLogin = function () {
-		return (window.localStorage.getItem("access_token")!==undefined);
+     	return !(window.localStorage.getItem("access_token")=="undefined" || window.localStorage.getItem("access_token")==null);
     };
 
 //функция распределения данных с параметром type = getpath, и получения нужного пути с параметром type = setdata
@@ -22,8 +22,15 @@ this.route = function(type, data, responseData){
 	_this.openfirst(responseData);
 	}}
  if(data=='firstperson'){if(type=='getpath'){return{path:'settings/profile/edit',method:'GET'};}else{userProfileData=responseData; }}
+ if(data=='subscriptions'){if(type=='getpath'){return{path:'settings/profile/edit',method:'GET'};}else{userProfileData=responseData;
+ _this.showSubscribe();   
+ }}
+ if(data=='getmycars'){if(type=='getpath'){return{path:'settings/profile/edit',method:'GET'};}else{userProfileData=responseData;
+ _this.carsshow();   
+ }}
+ 
  if(data=='login'){if(type=='getpath'){return{path:'login/',method:'POST'};}else{islogins=true;}} 
- if(data=='activationuserlogin'){if(type=='getpath'){return{path:'resend/',method:'POST'};}else{console.log(responseData);}}
+ if(data=='activationuserlogin'){if(type=='getpath'){return{path:'resend/',method:'POST'};}else{showlog(responseData);}}
  if(data=='cities_search'){if(type=='getpath'){return{path:'cities/'+responseData,method:'GET'};}else{cityIsSearched=0;_this.createDivCity(responseData);}} 
  if(data=='person_edit'){if(type=='getpath'){return{path:'settings/profile/edit', method:'POST'};}else{}}
  if(data=='map'){if(type=='getpath'){return{path:'map',method:'POST'}; }else{myApp.closePanel();_this.createMap(responseData);}} 
@@ -75,12 +82,12 @@ if(responseData!==undefined){
                 data: data,
                 error: function (xhr) {
 					
-					console.log(xhr);
+					showlog(xhr);
 					
 				},
 				success: function (data) {
 				
-					console.log(data);
+					showlog(data);
 				
 				},
 		});
@@ -91,7 +98,7 @@ if(responseData!==undefined){
 	this.getdataserver=function(parent, data, variable) {
         
         var t = _this.route('getpath', parent, variable);
-	//	console.log(requestnow); console.log(access_token); console.log(t.path);
+	//	showlog(requestnow); showlog(access_token); showlog(t.path);
 		
 		/*
 		if(!access_token) {
@@ -103,7 +110,7 @@ if(responseData!==undefined){
 		
 		if(requestnow==1 && (parent!=='login' || parent!=='login_first')) {
 
-            /*console.log(parent);*/
+            /*showlog(parent);*/
 
             _this.tryes=_this.tryes+1;
 
@@ -155,8 +162,8 @@ if(responseData!==undefined){
 				error: function (xhr) {
 
                     
-				console.log('error - '+t.path);
-                            console.log(xhr);
+				showlog('error - '+t.path);
+                            showlog(xhr);
 					myApp.hideIndicator();
 					requestnow=0;
 					if(!(xhr.status==500 || xhr.status==401 || xhr.status==400 || xhr.status==0) ) {
@@ -175,12 +182,15 @@ if(responseData!==undefined){
                             }
                         }
                         else {
-							window.localStorage.setItem("access_token", xhr.getResponseHeader('Authorization'));
+			   window.localStorage.setItem("access_token", xhr.getResponseHeader('Authorization'));
                      
                         }
                     }else{
-					  myApp.loginScreen();	
-					  window.localStorage.setItem("access_token", undefined);
+                      window.localStorage.clear();
+                     myApp.closePanel();
+                     
+                     mainView.router.loadPage("index.html");
+                     _this.openInfoPopup('Связь с сервером прервалась');
 					}
 
 
@@ -227,7 +237,7 @@ if(responseData!==undefined){
 
                 success: function (data) {
 
-                   console.log('success - '+t.path);	
+                   showlog('success - '+t.path);	
 					
 		      myApp.hideIndicator();
                   
@@ -299,7 +309,7 @@ this.createDivCity = function (responseData){
 	}
 	$$('#cities').html(html);
 	var coords=_this.activeCitySearch[0].getBoundingClientRect();
-	//console.log(coords);
+	//showlog(coords);
 	$$('.cityBlock').click(function(){
 		var tid=_this.activeCitySearch.attr('id');
 		var idcity=$$(this).attr('id').replace('cityID', "");
@@ -317,8 +327,10 @@ this.ticketThemeCreate = function (responseData){
 	var html='';
 	var className= new Array('close', 'new', 'answered');
 	  for (var theme in responseData) {
+              count_message=0;
+              if(responseData[theme].messages_count!=undefined){count_message=responseData[theme].messages_count;}
 		html=html+'<div class="theme-block" id="theme'+responseData[theme].id+'">'+
-		'<div class="themeico '+className[responseData[theme].state_id]+'">0</div><div class="themesubject">'+responseData[theme].subject.substr(0,28)+'<span>'+responseData[theme].subject.substr(0,30)+'</span></div>'+
+		'<div class="themeico '+className[responseData[theme].state_id]+'">'+count_message+'</div><div class="themesubject">'+responseData[theme].subject.substr(0,28)+'<span>'+responseData[theme].subject.substr(0,30)+'</span></div>'+
 		'</div>';
 	  }
 	
@@ -387,7 +399,7 @@ myObjectManager.objects.options.set({
                    
                   },
                 function (error) {
-                   // console.log(error.message);
+                   // showlog(error.message);
                 }
             );
         }
@@ -427,7 +439,7 @@ myObjectManager.objects.options.set({
         myObjectManager.add(myObjects);        
         myMap.geoObjects.add(myObjectManager);  
 		}, function (e) {
-			//console.log(e);
+			//showlog(e);
 		});
     });
     }
@@ -453,10 +465,14 @@ this.savecardata=function(responseData){
 	
 /*отображение машин */
  this.carsshow = function(){
-	  var carList = [];
-    if(userProfileData!==false){
-        carList = userProfileData.cars;
-    }
+	showlog(userProfileData.cars); 
+   if(userProfileData.cars==undefined){
+       
+     vicFunc.getdataserver('getmycars','');
+   }else{
+        var carList = [];
+       carList = userProfileData.cars;
+
     var carHtml = '';
     var enablesname=new Array('Выключена', 'Включена');
 	 var classname=new Array('disabled', 'enabled');
@@ -528,7 +544,7 @@ this.savecardata=function(responseData){
  
 
 	$$('.bodyType_option').html(htmloption);
-
+   }
  };
  
  this.mapRoutesDetail= function(responseData){
@@ -566,6 +582,95 @@ this.savecardata=function(responseData){
 	 });
      
 };
+this.showSubscribe = function(){
+           var html='';
+    var dummyMap = new ymaps.Map("mapdummy", {
+        center: [55.751574, 37.573856],
+        zoom: 9
+        });
+      var mynewroute=[];
+  	for (var i in userProfileData.subscriptions) {
+     mynewroute[userProfileData.subscriptions[i].id]=new ymaps.route([userProfileData.subscriptions[i].city_from.CityName, userProfileData.subscriptions[i].city_to.CityName]);   
+      mynewroute[userProfileData.subscriptions[i].id].then(
+       function (route) {
+         var routeLength = Math.round(route.getLength()/10)/100;
+         for(var t in mynewroute){
+            if(mynewroute[t]._value==route){
+            $$('#longcount'+t).html(routeLength+' км');    
+            }
+         }
+       }
+     );
+        html=html+'<div class="subscribeblock" id="subsc'+userProfileData.subscriptions[i].id+'">'+
+				'<div class="begin">'+
+					'<span class="icon_map_routes"></span>'+
+					'<div class="address-name">'+
+						'<div class="city">'+userProfileData.subscriptions[i].city_from.CityName+'</div>'+
+						'<div class="region">'+userProfileData.subscriptions[i].city_from.RegionName+'</div>'+
+					'</div>'+
+					'<div class="address-name">'+
+						'<div class="city">'+userProfileData.subscriptions[i].city_to.CityName+'</div>'+
+						'<div class="region">'+userProfileData.subscriptions[i].city_to.RegionName+'</div>'+
+					'</div>'+
+				'</div>'+
+				'<div class="itog">'+
+					'<div class="long"><span class="ico icon-dist"></span><span id="longcount'+userProfileData.subscriptions[i].id+'"> </span></div>'+
+					'<div class="compass showinmap" to="'+userProfileData.subscriptions[i].city_to.CityName+'" from="'+userProfileData.subscriptions[i].city_from.CityName+'"><span class="ico icon-compass"></span></div>'+
+				'</div>'+
+				'<div class="stat">'+
+					'<div class="label" id="enabled'+userProfileData.subscriptions[i].id+'">';
+                if(userProfileData.subscriptions[i].enabled==1){html=html+'Включена'; var check='checked="checked"';
+                }else{html=html+'Выключена';var check='';}
+                 html=html+'</div>'+
+					'<label class="label-switch"><input type="checkbox" class="enabled_subscribe" '+check+' i="'+i+'" name="'+userProfileData.subscriptions[i].id+'"><div class="checkbox"></div></label>'+
+				'</div>'+
+				'<div class="button-container">'+
+					'<!--div class="change_subscribe btn-lite" changeid="'+userProfileData.subscriptions[i].id+'">ИЗМЕНИТЬ</div-->'+
+					'<div class="delete_subscribe btn-lite"  i="'+i+'" deleteid="'+userProfileData.subscriptions[i].id+'">УДАЛИТЬ</div>'+
+				'</div>'+
+		 '</div>';
+        }
+    /*		  */
+   $$('#subscribeblocks').html(html);
+
+   $$('.showinmap').on('click', function () {
+        subscriptionsfrom=$$(this).attr('from');
+        subscriptionsto=$$(this).attr('to');
+         mainView.router.loadPage('pages/map.html');
+
+        });
+     $$('.delete_subscribe').on('click', function () {
+          var delete_id=$$(this).attr('deleteid');
+          var i=$$(this).attr('i');
+          vicFunc.getdataserver('delete_subscriptions', {}, delete_id);
+          $$('#subsc'+delete_id).remove();
+          userProfileData.subscriptions.splice(i,1);
+        });
+     $$('.enabled_subscribe').on('change', function () {
+       var enabled_id=$$(this).attr('name');
+       var i=$$(this).attr('i');
+       if($$(this).prop('checked')===true){
+        userProfileData.subscriptions[i].enabled=1;
+        $$('#enabled'+enabled_id).text("Включена");
+        vicFunc.getdataserver('enable_subscriptions', {enabled: true}, enabled_id);
+       }else{
+        userProfileData.subscriptions[i].enabled=0;
+        $$('#enabled'+enabled_id).text("Выключена");
+        vicFunc.getdataserver('enable_subscriptions', {}, enabled_id);        
+       }
+        });
+
+    
+     $$('.addsubscribe').on('click', function () {	
+      myApp.popup('.popup-addsubscribe');            
+    });
+     
+      $$('.save_subscribe').on('click', function () {
+         var data={city_from_id: $$('#begin_id').val(), city_to_id: $$('#end_id').val()};
+         vicFunc.getdataserver('create_subscriptions', data);
+          myApp.closeModal('.popup-addsubscribe');
+        });
+       };
  /*добавляем подписку после сохранения*/
  this.addSubscriptions= function(responseData){
 	var html= $$('#subscribeblocks').html();
@@ -614,7 +719,7 @@ this.savecardata=function(responseData){
   routesList=responseData.data;
   var routeHtml = '';
   for (var route in routesList) {
-	  price=Math.round(routesList[route]['route_length']/routesList[route]['carrier_rate']);
+    price=Math.round(routesList[route]['carrier_rate']/routesList[route]['route_length']);
     routeHtml = routeHtml + '<div class="routeblock" id="' + routesList[route]['id'] + '">'
     + '<div class="header">'
     + '<div class="item-media"><span class="ico icon-dates"></span></div>'
@@ -639,7 +744,7 @@ this.savecardata=function(responseData){
 	if(routesList[route]['carrier_rate']!==null && routesList[route]['carrier_rate']>0){
     routeHtml = routeHtml+ '<div class="cost"><span class="ico icon-rub"></span> ' + routesList[route]['carrier_rate'] + ' руб</div>';
 	}
-	if(price!==null && price>0){
+	if(price!==null && price>0 && price!=Infinity){
    routeHtml = routeHtml + '<div class="price">' + price + ' руб/км</div>';
 	}
 		if(routesList[route]['route_length']!==null && routesList[route]['route_length'] > 0){
@@ -682,7 +787,8 @@ this.login_first_error = function(responseData){
        myApp.popup('.popup-registrationsms');
       });
       $$('.popup-sendregistrationsms .close-popup').on('click', function () {
-        myApp.loginScreen();
+      
+       mainView.router.loadPage('index.html'); 
       });        
       myApp.popup('.popup-sendregistrationsms');        
       }        
@@ -737,27 +843,28 @@ this.setUserProfileEdit = function(){
 	}
 	
 	
-	if(window.localStorage.getItem("role_label")=="Перевозчик"){$$('.forUr').show();}else{$$('.forUr').hide();}
-	$$('#save').on('click', function () {
-		  data =  myApp.formToJSON($$('#edit-profile-form'));
-		  data['user']=userProfileData.id;
-		 _this.getdataserver('person_edit', data);		 
-	});
+	if(vicFunc.isFullRole()){$$('.forUr').show();}else{$$('.forUr').hide();}
+
 }
 this.ticket_message = function(responseData){  
 		var theme=$$('#themeid').val();	
 		 if(theme!==undefined){			
-		 _this.getdataserver('ticket_view','', theme);
+		 vicFunc.getdataserver('ticket_view','', theme);
 		 $$('#themenewmsg').val('');	
 		 };
   };
+  
+this.isFullRole = function(){
+   return  (window.localStorage.getItem("role_id")==7); 
+ };  
 /*открываем страницу в первый раз*/
 this.openfirst = function(responseData){
 	userProfileData=responseData;
 	$$('.personal_name').text(responseData.user.name);
 	$$('.personal_type').text(responseData.user.role_label);
      window.localStorage.setItem("name", responseData.user.name);
-     window.localStorage.setItem("role_label", responseData.user.role_label); 
+     window.localStorage.setItem("role_label", responseData.user.role_label);
+       window.localStorage.setItem("role_id", responseData.user.role_id); 
 	mainView.router.loadPage('pages/map.html');  
 	$$('#exit_icon').on('click', function () {		
       window.localStorage.clear();
@@ -771,7 +878,7 @@ this.openfirst = function(responseData){
 	$$('#menulist').on('click', function () {
 	 myApp.closeModal('.picker-modal.modal-in');
 	});
-	if(userProfileData.user.role_label=="Перевозчик"){
+	if(vicFunc.isFullRole()){
 	$$('#menuroutes').on('click', function () {	
 	   myApp.closeModal('.picker-modal.modal-in');
 	});
@@ -816,4 +923,7 @@ this.openfirst = function(responseData){
 	});
         
 }
+}
+function showlog(m){
+   console.log(m);    
 }
